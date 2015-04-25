@@ -7,7 +7,8 @@ require('dotenv').load();
 var hbs = expressHbs.create({
     defaultLayout:'main',
     helpers: {
-        formatDate: function (date) { return moment(date).format('ddd DD-MM-YY'); }
+        formatDate: function (date) { return moment(date).format('ddd DD-MM-YY'); },
+        firebaseurl: function () { return process.env.FIRE_URL; }
     }
 });
 
