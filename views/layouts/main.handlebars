@@ -28,11 +28,15 @@
 				);
 			}
 		});
-		$().ready(function(){
+		var checkFirebaseReady = function checkFirebaseReady(){
 			if(firebaseRef.getAuth()){
 				$(document).trigger('firebase-ready');
+			}else{
+				setTimeout(checkFirebaseReady,500);
 			}
-		})
+		};
+		setTimeout(checkFirebaseReady,0);
+		
 	</script>
 </body>
 </html>
