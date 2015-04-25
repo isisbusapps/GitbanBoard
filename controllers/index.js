@@ -22,7 +22,26 @@ router.get('/kanban', auth, function(req, res) {
 		repos: process.env.REPOS.split(',')
 	},
 	function(issues){
-  		res.render('kanban', {backlog:issues});
+		var githubusers = [],
+			labels = [];
+		issues.forEach(function(issue){
+			if(githubusers.indexOf(issue.user.login) < 0){
+				githubusers.push(issue.user.login);
+			}
+			issue.labels.forEach(function(label){
+				if(labels.indexOf(label.name) < 0){
+					labels.push(label.name);
+				}	;
+			});
+		});
+  		res.render('kanban', 
+  			{
+  				backlog:issues,
+  				githubusers: githubusers,
+  				labels: labels,
+  				repos: process.env.REPOS.split(',') 
+  			}
+		);
 	}
 	);
 });

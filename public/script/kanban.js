@@ -1,5 +1,4 @@
 (function(){
-	$('.issue-col').height($('.issue-col').height());
 	
 	var init = function init(){
 		$('.issue-col').each(function(){
@@ -11,6 +10,18 @@
 
 		firebaseRef.child("issues").on("child_changed", updateIssues);
 		firebaseRef.child("issues").on("child_added", updateIssues);
+
+		configFilterOptions();
+	};
+
+	var resizeColumns = function resizeColumns(){
+		var colHeight =  -1;
+	    $('.issue-col').each(function() {
+	    	$(this).height('initial');
+	        var h = $(this).height();
+	        colHeight = h > colHeight ? h : colHeight;
+	    });
+		$('.issue-col').height(colHeight);
 	};
 
 	var startDrag = function startDrag(e){
@@ -32,7 +43,29 @@
 		if($issue.parents(column).length == 0){
 			$issue.remove().appendTo(column);
 		}
+		resizeColumns();
+	};
+
+	var configFilterOptions = function configFilterOptions(){
+		var filterIssues = function filterIssues(){
+			$('.issue').show();
+			$('.js-githubuser').not(':checked').each(function(){
+				$('.issue[data-username="'+$(this).parent().text().trim()+'"]').hide();
+			});
+			$('.js-label').not(':checked').each(function(){
+				$('.issue[data-label*="'+$(this).parent().text().trim()+'"]').hide();
+			});
+			$('.js-repo').not(':checked').each(function(){
+				$('.issue[data-repo="'+$(this).parent().text().trim()+'"]').hide();
+			});
+
+			$('#filterModal').modal('hide');
+			resizeColumns();
+		};
+
+		$('#saveFilterButton').on('click', filterIssues);
 	};
 
 	$(document).on('firebase-ready', init);
+	resizeColumns();
 }());
