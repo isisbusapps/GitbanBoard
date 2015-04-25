@@ -1,6 +1,7 @@
 (function(){
+	$('.issue-col').height($('.issue-col').height());
+	
 	var init = function init(){
-		$('.issue-col').height($('.issue-col').height());
 		$('.issue-col').each(function(){
 			this.addEventListener('drop', onDrop);
 		});
@@ -33,5 +34,5 @@
 		}
 	};
 
-	init();
+	$(document).on('firebase-ready', init);
 }());

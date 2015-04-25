@@ -44,3 +44,15 @@
 		</div>
 	</div>
 </div>
+
+{{> scripts }}
+<script src="//cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
+<script src="/script/kanban.js"></script>
+<script>
+	var firebaseRef = new Firebase("{{firebaseurl}}");
+	if(!firebaseRef.getAuth()){
+		firebaseRef.authWithOAuthPopup("github", function(error, authData) {$(document).trigger('firebase-ready');}, {scope: 'repo'});
+	}else{
+		$(document).trigger('firebase-ready');
+	}
+</script>

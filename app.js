@@ -1,22 +1,89 @@
 var express = require('express'),
  	app = express(),
  	expressHbs = require('express-handlebars'),
+	cookieParser = require('cookie-parser'),
+	bodyParser = require('body-parser'), 
+ 	passport = require('passport'),
+ 	GitHubStrategy = require('passport-github').Strategy,
  	moment = require('moment');
+
 require('dotenv').load();
 
-var hbs = expressHbs.create({
-    defaultLayout:'main',
-    helpers: {
-        formatDate: function (date) { return moment(date).format('ddd DD-MM-YY'); },
-        firebaseurl: function () { return process.env.FIRE_URL; }
-    }
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(require('express-session')({
+    secret: 'dshbrts w;kjregvrejk',
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(new GitHubStrategy(
+	{
+	    clientID: process.env.GH_KEY,
+	    clientSecret: process.env.GH_SECRET,
+	    callbackURL: "/auth/github/callback",
+	    scope: "repo"
+  	},
+  	function(accessToken, refreshToken, profile, done) {
+		// Make sure user is allowed
+        if(process.env.ALLOWED_USERS.split(',').indexOf(profile.username) >= 0){
+            return done(null, profile);            
+        }else{
+            return done('Invalid user');
+        }
+  	}
+));
+passport.serializeUser(function(user, done) {
+	done(null, user);
 });
 
-app.engine('handlebars', hbs.engine);
+passport.deserializeUser(function(user, done) {
+	done(null, user);
+});
+
+app.engine('handlebars', expressHbs.create({
+	    defaultLayout:'main',
+	    helpers: {
+	        formatDate: function (date) { return moment(date).format('ddd DD-MM-YY'); },
+	        firebaseurl: function () { return process.env.FIRE_URL; }
+	    }
+	}).engine);
 app.set('view engine', 'handlebars');
 
 app.use(express.static(__dirname + '/public'));
 app.use(require('./controllers'));
+app.use(require('./controllers/auth'));
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
+});
+
+// development error handler will print stacktrace
+if (app.get('env') === 'development') {
+    app.use(function(err, req, res, next) {
+        res.status(err.status || 500);
+        res.render('error', {
+            status: err.status || 500,
+            message: err.message,
+            error: err
+        });
+    });
+}
+// production error handler no stacktraces leaked to user
+app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('error', {
+        status: err.status || 500,
+        message: err.message,
+        error: {}
+    });
+});
 
 app.listen(process.env.PORT, function() {
   console.log('Listening on port '+process.env.PORT+'...');

@@ -12,9 +12,16 @@
 			</div>
 			<div id="navbar" class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
-					<li class="active"><a href="#">Home</a></li>
-					<li><a href="/about">About</a></li>
+					<li><a href="/">Home</a></li>
+					<li><a href="/kanban">Kanban Board</a></li>
 				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					{{#if user}}
+						<li><a href="/logout">Logout</a></li>
+					{{else}}
+						<li><a href="/login">Login</a></li>
+					{{/if}}
+	            </ul>
 			</div>
 		</div>
 	</nav>
