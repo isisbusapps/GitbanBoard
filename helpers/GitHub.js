@@ -42,7 +42,7 @@ module.exports = {
 			function(err, res){
 				if(err) console.log("Error: "+err);
 				res.forEach(function(issue, issueKey){
-					if(res.hasOwnProperty(issueKey)){
+					if(res.hasOwnProperty(issueKey) && !issue.pull_request){
 						issue.reponame = repo;
 						issues.push(issue);
 					}
