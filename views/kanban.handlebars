@@ -14,9 +14,9 @@
 		</div>
 	</div>
 	<div class="row">
-		<div id="backlog-col" class="col-sm-3 issue-col">
+		<div id="backlog-col" class="col-sm-3 issue-col" ondragover="return false">
 			{{#each backlog}}
-				<div class="issue">
+				<div class="issue" draggable="true" id="issue{{id}}">
 					<span class="title">{{title}}</span>
 					<img src="{{user.avatar_url}}" class="avatar" />
 					<div class="description">{{body}}</div>
@@ -33,13 +33,13 @@
 				</div>
 			{{/each}}
 		</div>
-		<div id="todo-col" class="col-sm-3 issue-col">
+		<div id="todo-col" class="col-sm-3 issue-col" ondragover="return false">
 			
 		</div>
-		<div id="inprogress-col" class="col-sm-3 issue-col">
+		<div id="inprogress-col" class="col-sm-3 issue-col" ondragover="return false">
 			
 		</div>
-		<div id="done-col" class="col-sm-3 issue-col">
+		<div id="done-col" class="col-sm-3 issue-col" ondragover="return false">
 			
 		</div>
 	</div>
