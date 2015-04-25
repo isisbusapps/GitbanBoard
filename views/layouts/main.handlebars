@@ -22,8 +22,7 @@
 				firebaseRef.authWithOAuthPopup(
 					"github", 
 					function(error, authData) {
-						$(document).trigger('firebase-ready');
-						$('#kanbanlink').click();
+						window.location = $('#kanbanlink').attr('href');
 					}, 
 					{scope: 'repo'}
 				);
