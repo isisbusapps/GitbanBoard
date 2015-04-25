@@ -9,5 +9,31 @@
 	{{> header }}
 
 	{{{body}}}
+
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="/script/drag-drop-polyfill.js" async defer></script>
+	<script src="//cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
+	<script src="/script/kanban.js"></script>
+	<script>
+		var firebaseRef = new Firebase("{{firebaseurl}}");
+		$('#kanbanlink').on('click', function(e){
+			if(!firebaseRef.getAuth()){
+				e.preventDefault();
+				firebaseRef.authWithOAuthPopup(
+					"github", 
+					function(error, authData) {
+						$(document).trigger('firebase-ready');
+						$('#kanbanlink').click();
+					}, 
+					{scope: 'repo'}
+				);
+			}
+		});
+		$().ready(function(){
+			if(firebaseRef.getAuth()){
+				$(document).trigger('firebase-ready');
+			}
+		})
+	</script>
 </body>
 </html>
