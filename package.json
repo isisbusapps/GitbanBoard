@@ -2,7 +2,7 @@
   "name": "GitbanBoard",
   "version": "1.0.0",
   "description": "GitHub-centric Kanban board",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -22,6 +22,9 @@
   "homepage": "https://github.com/AverageMarcus/GitbanBoard",
   "dependencies": {
     "dotenv": "^1.1.0",
-    "github": "^0.2.4"
+    "express": "^4.12.3",
+    "express-handlebars": "^2.0.1",
+    "github": "^0.2.4",
+    "handlebars": "^3.0.2"
   }
 }
