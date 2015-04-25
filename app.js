@@ -1,9 +1,17 @@
 var express = require('express'),
  	app = express(),
- 	expressHbs = require('express-handlebars');
+ 	expressHbs = require('express-handlebars'),
+ 	moment = require('moment');
 require('dotenv').load();
 
-app.engine('handlebars', expressHbs({defaultLayout:'main'}));
+var hbs = expressHbs.create({
+    defaultLayout:'main',
+    helpers: {
+        formatDate: function (date) { return moment(date).format('ddd DD-MM-YY'); }
+    }
+});
+
+app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 
 app.use(express.static(__dirname + '/public'));

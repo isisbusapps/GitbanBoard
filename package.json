@@ -25,6 +25,7 @@
     "express": "^4.12.3",
     "express-handlebars": "^2.0.1",
     "github": "^0.2.4",
-    "handlebars": "^3.0.2"
+    "handlebars": "^3.0.2",
+    "moment": "^2.10.2"
   }
 }

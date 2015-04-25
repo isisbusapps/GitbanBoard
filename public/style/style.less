@@ -1,0 +1,33 @@
+@import 'issue-tile';
+
+@border-colour: #597A87;
+
+[id$='-col-header']{
+	h3{
+		margin:0;
+		padding:0;
+		color: @border-colour;
+		font-weight: bold;
+	}
+
+	padding-bottom:5px;
+	padding-top:5px;
+	border-bottom:2px solid @border-colour;
+	border-right:2px solid @border-colour;
+	border-top:2px solid @border-colour;
+
+	&:last-of-type{
+		border-right: 0;
+	}
+}
+
+.issue-col{
+	border-bottom:2px solid @border-colour;
+	border-right:2px solid @border-colour;
+	min-height:500px;
+	height: 100%;
+	
+	&:last-of-type{
+		border-right: 0;
+	}
+}
