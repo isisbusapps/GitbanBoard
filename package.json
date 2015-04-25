@@ -1,0 +1,23 @@
+{
+  "name": "GitbanBoard",
+  "version": "1.0.0",
+  "description": "GitHub-centric Kanban board",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AverageMarcus/GitbanBoard.git"
+  },
+  "keywords": [
+    "github",
+    "kanban"
+  ],
+  "author": "Marcus Noble",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AverageMarcus/GitbanBoard/issues"
+  },
+  "homepage": "https://github.com/AverageMarcus/GitbanBoard"
+}
