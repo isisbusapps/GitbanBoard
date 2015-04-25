@@ -33,7 +33,7 @@ module.exports = {
 		}
 
 		opts.repos.forEach(function(repo, key){
-			github.pullRequests.getAll(
+			github.issues.repoIssues(
 			{
 				user: process.env.ORG_NAME,
 				repo: repo,
