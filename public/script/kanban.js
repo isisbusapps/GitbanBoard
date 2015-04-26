@@ -41,7 +41,7 @@
 	var updateIssues = function updateIssues(snapshot){
 		var $issue = $('#'+snapshot.val().id);
 		var column = '#'+snapshot.val().column;
-		if($issue.parents(column).length == 0){
+		if($issue.parents(column).length === 0){
 			$issue.remove().appendTo(column);
 		}
 		$('.progress').remove();
@@ -68,7 +68,7 @@
 			if(moment(lastUpdated).isBefore(moment().subtract(weeks, 'weeks'))){
 				$(this).addClass('hide');
 			}
-		})
+		});
 
 		$('#filterModal').modal('hide');
 		resizeColumns();
@@ -105,7 +105,7 @@
 								}								
 							}
 						}
-					})
+					});
 				}
 				filterIssues();
 			});			
