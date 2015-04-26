@@ -1,11 +1,11 @@
 var express = require('express'),
- 	app = express(),
- 	expressHbs = require('express-handlebars'),
-	cookieParser = require('cookie-parser'),
-	bodyParser = require('body-parser'), 
- 	passport = require('passport'),
- 	GitHubStrategy = require('passport-github').Strategy,
- 	moment = require('moment');
+    app = express(),
+    expressHbs = require('express-handlebars'),
+    cookieParser = require('cookie-parser'),
+    bodyParser = require('body-parser'), 
+    passport = require('passport'),
+    GitHubStrategy = require('passport-github').Strategy,
+    moment = require('moment');
 
 require('dotenv').load();
 
@@ -21,36 +21,37 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 passport.use(new GitHubStrategy(
-	{
-	    clientID: process.env.GH_KEY,
-	    clientSecret: process.env.GH_SECRET,
-	    callbackURL: "/auth/github/callback",
-	    scope: "repo"
-  	},
-  	function(accessToken, refreshToken, profile, done) {
-		// Make sure user is allowed
+    {
+        clientID: process.env.GH_KEY,
+        clientSecret: process.env.GH_SECRET,
+        callbackURL: "/auth/github/callback",
+        scope: "repo"
+    },
+    function(accessToken, refreshToken, profile, done) {
+        // Make sure user is allowed
         if(process.env.ALLOWED_USERS.split(',').indexOf(profile.username) >= 0){
             return done(null, profile);            
         }else{
             return done('Invalid user');
         }
-  	}
+    }
 ));
 passport.serializeUser(function(user, done) {
-	done(null, user);
+    done(null, user);
 });
 
 passport.deserializeUser(function(user, done) {
-	done(null, user);
+    done(null, user);
 });
 
 app.engine('handlebars', expressHbs.create({
-	    defaultLayout:'main',
-	    helpers: {
-	        formatDate: function (date) { return moment(date).format('ddd DD-MM-YY'); },
-	        firebaseurl: function () { return process.env.FIRE_URL; }
-	    }
-	}).engine);
+        defaultLayout:'main',
+        helpers: {
+            formatDate: function (date) { return moment(date).format('ddd DD-MM-YY'); },
+            firebaseurl: function () { return process.env.FIRE_URL; },
+            is: function(a, b){ return a == b; }
+        }
+    }).engine);
 app.set('view engine', 'handlebars');
 
 app.use(express.static(__dirname + '/public'));
