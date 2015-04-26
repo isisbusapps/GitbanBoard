@@ -97,10 +97,12 @@
 					Object.keys(formValues).forEach(function(key){
 						if(formValues.hasOwnProperty(key)){
 							var inputElement = document.getElementById(key.replace(/&46;/g,'.'));
-							if(inputElement.type === "checkbox"){
-								inputElement.checked = formValues[key];
-							}else{
-								inputElement.value = formValues[key];
+							if(inputElement){
+								if(inputElement.type === "checkbox"){
+									inputElement.checked = formValues[key];
+								}else{
+									inputElement.value = formValues[key];
+								}								
 							}
 						}
 					})

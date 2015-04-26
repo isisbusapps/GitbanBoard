@@ -17,7 +17,7 @@ router.get('/', function(req, res){
 });
 
 router.get('/kanban', auth, function(req, res) {
-	var githubusers = [],
+	var githubUsers = [],
 		githubIssues = [],
 		standupUsers = [],
 		labels = [],
@@ -36,7 +36,7 @@ router.get('/kanban', auth, function(req, res) {
 	  		res.render('kanban', 
 	  			{
 	  				backlog: githubIssues,
-	  				githubusers: githubusers,
+	  				githubusers: githubUsers,
 	  				labels: labels,
 	  				repos: process.env.REPOS.split(','),
 	  				standupUsers: standupUsers
@@ -63,8 +63,8 @@ router.get('/kanban', auth, function(req, res) {
 		},
 		function(issues){
 			issues.forEach(function(issue){
-				if(githubusers.indexOf(issue.user.login) < 0){
-					githubusers.push(issue.user.login);
+				if(issue.assignee && githubUsers.indexOf(issue.assignee.login) < 0){
+					githubUsers.push(issue.assignee.login);
 				}
 				issue.labels.forEach(function(label){
 					if(labels.indexOf(label.name) < 0){

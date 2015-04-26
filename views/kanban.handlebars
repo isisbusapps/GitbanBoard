@@ -28,11 +28,11 @@
 		<div id="backlog-col" class="col-sm-3 issue-col" ondragover="return false">
 			{{#each backlog}}
 				<div class="issue" draggable="true" id="issue{{id}}" 
-					data-username="{{user.login}}" data-label="{{#each labels}}{{name}} {{/each}}" data-repo="{{reponame}}"
+					data-username="{{#if assignee}}{{assignee.login}}{{else}}Unassigned{{/if}}" data-label="{{#each labels}}{{name}} {{/each}}" data-repo="{{reponame}}"
 					data-state="{{state}}" data-updated="{{updated_at}}"
 					>
 					<span class="title">{{title}}</span>
-					<img src="{{user.avatar_url}}" class="avatar" />
+					<img src="{{assignee.avatar_url}}" class="avatar" />
 					<div class="description">{{body}}</div>
 					<div class="labels">
 						{{#each labels}}
@@ -83,6 +83,9 @@
 									<label><input type="checkbox" checked="checked" id="githubuser-{{this}}" class="js-githubuser" /> {{this}}</label>
 								</li>
 							{{/each}}
+								<li>
+									<label><input type="checkbox" checked="checked" id="githubuser-Unassigned" class="js-githubuser" /> Unassigned</label>
+								</li>
 							</ul>
 						</div>
 						<div class="row">
