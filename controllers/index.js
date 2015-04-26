@@ -17,33 +17,64 @@ router.get('/', function(req, res){
 });
 
 router.get('/kanban', auth, function(req, res) {
-	github.getIssues(
-	{
-		repos: process.env.REPOS.split(','),
-		status: 'all'
-	},
-	function(issues){
-		var githubusers = [],
-			labels = [];
-		issues.forEach(function(issue){
-			if(githubusers.indexOf(issue.user.login) < 0){
-				githubusers.push(issue.user.login);
-			}
-			issue.labels.forEach(function(label){
-				if(labels.indexOf(label.name) < 0){
-					labels.push(label.name);
-				}	;
+	var githubusers = [],
+		githubIssues = [],
+		standupUsers = [],
+		labels = [],
+		users = process.env.ALLOWED_USERS.split(',');
+
+	var completed = 0, toComplete = 0, usersFetched = 0;
+
+	function done(){
+		if(++completed === toComplete){
+			// Order isn't guaranteed so manually sort by username
+			standupUsers = standupUsers.sort(function(a, b){
+				if(a.login > b.login) return 1;
+				if(a.login === b.login) return 0;
+				if(a.login < b.login) return -1;
 			});
-		});
-  		res.render('kanban', 
-  			{
-  				backlog:issues,
-  				githubusers: githubusers,
-  				labels: labels,
-  				repos: process.env.REPOS.split(',') 
-  			}
-		);
+	  		res.render('kanban', 
+	  			{
+	  				backlog: githubIssues,
+	  				githubusers: githubusers,
+	  				labels: labels,
+	  				repos: process.env.REPOS.split(','),
+	  				standupUsers: standupUsers
+	  			}
+			);
+	  	}
 	}
+	// Fetch all users
+	toComplete++;
+    users.forEach(function(username){
+        github.getUser(username, function(githubUser){
+            standupUsers.push(githubUser);
+            if(++usersFetched === users.length){
+                done();
+            }
+        });
+    });
+    // Fetch all issues
+	toComplete++;
+	github.getIssues(
+		{
+			repos: process.env.REPOS.split(','),
+			status: 'all'
+		},
+		function(issues){
+			issues.forEach(function(issue){
+				if(githubusers.indexOf(issue.user.login) < 0){
+					githubusers.push(issue.user.login);
+				}
+				issue.labels.forEach(function(label){
+					if(labels.indexOf(label.name) < 0){
+						labels.push(label.name);
+					}
+				});
+			});
+			githubIssues = issues;
+			done();
+		}
 	);
 });
 

@@ -58,5 +58,14 @@ module.exports = {
 		opts.repos.forEach(function(repo, key){
 			getFromGithub(repo);
 		});
+	},
+	getUser : function(username, callback){
+		github.user.getFrom(
+		{
+			user: username
+		},
+		function(err, res){
+			callback(res);
+		});
 	}
 };

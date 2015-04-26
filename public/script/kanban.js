@@ -12,6 +12,7 @@
 
 		firebaseRef.child("issues").on("child_changed", updateIssues);
 		firebaseRef.child("issues").on("child_added", updateIssues);
+		firebaseRef.child("standup").on("value", updateStandup);
 	};
 
 	var resizeColumns = function resizeColumns(){
@@ -34,7 +35,7 @@
 		firebaseRef.child("issues").child($issue.attr('id')).update({
 			"id":$issue.attr('id'),
 			"column":$newCol.attr('id')
-		})
+		});
 	};
 
 	var updateIssues = function updateIssues(snapshot){
@@ -126,6 +127,39 @@
 		loadFilter();
 	};
 
+	var standupMode = function standupMode(){
+		var endStandup = function endStandup(){
+			firebaseRef.child("standup").remove();
+		};
+		var selectUser = function selectUser(){
+			var username = $(this).data('standup-user');
+			firebaseRef.child("standup").update({
+				"username":username
+			});
+		};
+		$('[data-standup-user]').on('click', selectUser);
+		$('.js-endStandup').on('click', endStandup);
+	};
+
+	var updateStandup = function updateStandup(snapshot){
+		if(snapshot.val()){
+			var username = snapshot.val().username;
+			$('#standupBtn').text('Select Next Person');
+			$('.js-githubuser').each(function(){
+				this.checked = false;
+			});
+			if($('#githubuser-'+username).length){
+				$('#githubuser-'+username)[0].checked = true;
+			}
+			filterIssues();
+		}else{
+			$('#standupBtn').text('Start Stand-up');
+			configFilterOptions();
+		}
+		$('#standupModal').modal('hide');
+	};
+
+	$('#standupBtn').on('click', standupMode);
 	$(document).on('firebase-ready', init);
 	resizeColumns();
 }());
