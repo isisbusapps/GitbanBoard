@@ -1,3 +1,5 @@
+'use strict';
+/* global firebaseRef, moment, userId */
 (function(){
 	
 	var init = function init(){
@@ -10,9 +12,9 @@
 
 		configFilterOptions();
 
-		firebaseRef.child("issues").on("child_changed", updateIssues);
-		firebaseRef.child("issues").on("child_added", updateIssues);
-		firebaseRef.child("standup").on("value", updateStandup);
+		firebaseRef.child('issues').on('child_changed', updateIssues);
+		firebaseRef.child('issues').on('child_added', updateIssues);
+		firebaseRef.child('standup').on('value', updateStandup);
 	};
 
 	var resizeColumns = function resizeColumns(){
@@ -32,9 +34,9 @@
 		var $issue = $('#'+event.dataTransfer.getData('text/plain'));
 		var $newCol = $(e.target).closest('.issue-col');
 		$issue.remove().appendTo($newCol);
-		firebaseRef.child("issues").child($issue.attr('id')).update({
-			"id":$issue.attr('id'),
-			"column":$newCol.attr('id')
+		firebaseRef.child('issues').child($issue.attr('id')).update({
+			'id':$issue.attr('id'),
+			'column':$newCol.attr('id')
 		});
 	};
 
@@ -49,18 +51,21 @@
 	};
 
 	var filterIssues = function filterIssues(){
+		function getParentText(self){
+			return $(self).parent().text().trim();
+		}
 		$('.issue').removeClass('hide');
 		$('.js-githubuser').not(':checked').each(function(){
-			$('.issue[data-username="'+$(this).parent().text().trim()+'"]').addClass('hide');
+			$('.issue[data-username="'+getParentText(this)+'"]').addClass('hide');
 		});
 		$('.js-label').not(':checked').each(function(){
-			$('.issue[data-label*="'+$(this).parent().text().trim()+'"]').addClass('hide');
+			$('.issue[data-label*="'+getParentText(this)+'"]').addClass('hide');
 		});
 		$('.js-repo').not(':checked').each(function(){
-			$('.issue[data-repo="'+$(this).parent().text().trim()+'"]').addClass('hide');
+			$('.issue[data-repo="'+getParentText(this)+'"]').addClass('hide');
 		});			
 		$('.js-state').not(':checked').each(function(){
-			$('.issue[data-state="'+$(this).parent().text().trim()+'"]').addClass('hide');
+			$('.issue[data-state="'+getParentText(this)+'"]').addClass('hide');
 		});
 		$('.issue').each(function(){
 			var lastUpdated = $(this).data('updated');
@@ -79,26 +84,30 @@
 			var formInputs = document.getElementById('filterForm').elements;
 			var i=0, len = formInputs.length;
 			var formValues = {};
+			var inputId;
 			for(;i<len;i++){
-				if(formInputs[i].type === "checkbox"){
-					formValues[formInputs[i].id.replace(/\./g,'&46;')] = formInputs[i].checked;
+				inputId = formInputs[i].id.replace(/\./g,'&46;');
+				if(formInputs[i].type === 'checkbox'){
+					formValues[inputId] = formInputs[i].checked;
 				}else{
-					formValues[formInputs[i].id.replace(/\./g,'&46;')] = formInputs[i].value;
+					formValues[inputId] = formInputs[i].value;
 				}
 			}
-			firebaseRef.child("filter").child(userId).update(formValues);
+			firebaseRef.child('filter').child(userId).update(formValues);
 
 			filterIssues();
 		};
 		var loadFilter = function saveFilter(){
-			firebaseRef.child("filter").child(userId).once("value", function(snapshot){
+			var filters = firebaseRef.child('filter');
+			filters.child(userId).once('value', function(snapshot){
 				var formValues = snapshot.val();
+				var inputElement;
 				if(formValues){
 					Object.keys(formValues).forEach(function(key){
 						if(formValues.hasOwnProperty(key)){
-							var inputElement = document.getElementById(key.replace(/&46;/g,'.'));
+							inputElement = document.getElementById(key.replace(/&46;/g,'.'));
 							if(inputElement){
-								if(inputElement.type === "checkbox"){
+								if(inputElement.type === 'checkbox'){
 									inputElement.checked = formValues[key];
 								}else{
 									inputElement.value = formValues[key];
@@ -131,12 +140,12 @@
 
 	var standupMode = function standupMode(){
 		var endStandup = function endStandup(){
-			firebaseRef.child("standup").remove();
+			firebaseRef.child('standup').remove();
 		};
 		var selectUser = function selectUser(){
 			var username = $(this).data('standup-user');
-			firebaseRef.child("standup").update({
-				"username":username
+			firebaseRef.child('standup').update({
+				'username':username
 			});
 		};
 		$('[data-standup-user]').on('click', selectUser);
