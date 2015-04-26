@@ -47,6 +47,32 @@
 		resizeColumns();
 	};
 
+	var filterIssues = function filterIssues(){
+		$('.issue').removeClass('hide');
+		$('.js-githubuser').not(':checked').each(function(){
+			$('.issue[data-username="'+$(this).parent().text().trim()+'"]').addClass('hide');
+		});
+		$('.js-label').not(':checked').each(function(){
+			$('.issue[data-label*="'+$(this).parent().text().trim()+'"]').addClass('hide');
+		});
+		$('.js-repo').not(':checked').each(function(){
+			$('.issue[data-repo="'+$(this).parent().text().trim()+'"]').addClass('hide');
+		});			
+		$('.js-state').not(':checked').each(function(){
+			$('.issue[data-state="'+$(this).parent().text().trim()+'"]').addClass('hide');
+		});
+		$('.issue').each(function(){
+			var lastUpdated = $(this).data('updated');
+			var weeks = $('#dateRange').val();
+			if(moment(lastUpdated).isBefore(moment().subtract(weeks, 'weeks'))){
+				$(this).addClass('hide');
+			}
+		})
+
+		$('#filterModal').modal('hide');
+		resizeColumns();
+	};
+
 	var configFilterOptions = function configFilterOptions(){
 		var saveFilter = function saveFilter(){
 			var formInputs = document.getElementById('filterForm').elements;
@@ -80,31 +106,6 @@
 				}
 				filterIssues();
 			});			
-		};
-		var filterIssues = function filterIssues(){
-			$('.issue').show();
-			$('.js-githubuser').not(':checked').each(function(){
-				$('.issue[data-username="'+$(this).parent().text().trim()+'"]').hide();
-			});
-			$('.js-label').not(':checked').each(function(){
-				$('.issue[data-label*="'+$(this).parent().text().trim()+'"]').hide();
-			});
-			$('.js-repo').not(':checked').each(function(){
-				$('.issue[data-repo="'+$(this).parent().text().trim()+'"]').hide();
-			});			
-			$('.js-state').not(':checked').each(function(){
-				$('.issue[data-state="'+$(this).parent().text().trim()+'"]').hide();
-			});
-			$('.issue').each(function(){
-				var lastUpdated = $(this).data('updated');
-				var weeks = $('#dateRange').val();
-				if(moment(lastUpdated).isBefore(moment().subtract(weeks, 'weeks'))){
-					$(this).hide();
-				}
-			})
-
-			$('#filterModal').modal('hide');
-			resizeColumns();
 		};
 		var toggleAll = function toggleAll(e){
 			var formInputs = $(this).parent().next().find('input');
