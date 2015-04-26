@@ -1,16 +1,17 @@
+'use strict';
 require('dotenv').load();
-var GitHubApi = require("github");
+var GitHubApi = require('github');
 
 var github = new GitHubApi({
-    version: "3.0.0",
+    version: '3.0.0',
     debug: false,
-    protocol: "https",
+    protocol: 'https',
     headers: {
-        "user-agent": "Gitban-Board"
+        'user-agent': 'Gitban-Board'
     }
 });
 github.authenticate({
-    type: "oauth",
+    type: 'oauth',
     key: process.env.GH_KEY,
     secret: process.env.GH_SECRET
 });
@@ -43,7 +44,7 @@ module.exports = {
 				page: page
 			},
 			function(err, res){
-				if(err) console.log("Error: "+err);
+				if(err) console.log('Error: '+err);
 				if(!res.length) return repoDone();
 				res.forEach(function(issue, issueKey){
 					if(res.hasOwnProperty(issueKey) && !issue.pull_request){
@@ -55,7 +56,7 @@ module.exports = {
 			});
 		}
 
-		opts.repos.forEach(function(repo, key){
+		opts.repos.forEach(function(repo){
 			getFromGithub(repo);
 		});
 	},

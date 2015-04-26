@@ -1,11 +1,12 @@
-var express = require('express'),
-    app = express(),
-    expressHbs = require('express-handlebars'),
-    cookieParser = require('cookie-parser'),
-    bodyParser = require('body-parser'), 
-    passport = require('passport'),
-    GitHubStrategy = require('passport-github').Strategy,
-    moment = require('moment');
+'use strict';
+var express = require('express');
+var app = express();
+var expressHbs = require('express-handlebars');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+var passport = require('passport');
+var GitHubStrategy = require('passport-github').Strategy;
+var moment = require('moment');
 
 require('dotenv').load();
 
@@ -24,8 +25,8 @@ passport.use(new GitHubStrategy(
     {
         clientID: process.env.GH_KEY,
         clientSecret: process.env.GH_SECRET,
-        callbackURL: "/auth/github/callback",
-        scope: "repo"
+        callbackURL: '/auth/github/callback',
+        scope: 'repo'
     },
     function(accessToken, refreshToken, profile, done) {
         // Make sure user is allowed
@@ -47,9 +48,11 @@ passport.deserializeUser(function(user, done) {
 app.engine('handlebars', expressHbs.create({
         defaultLayout:'main',
         helpers: {
-            formatDate: function (date) { return moment(date).format('ddd DD-MM-YY'); },
+            formatDate: function (date) { 
+                return moment(date).format('ddd DD-MM-YY'); 
+            },
             firebaseurl: function () { return process.env.FIRE_URL; },
-            is: function(a, b){ return a == b; }
+            is: function(a, b){ return a === b; }
         }
     }).engine);
 app.set('view engine', 'handlebars');
@@ -67,7 +70,7 @@ app.use(function(req, res, next) {
 
 // development error handler will print stacktrace
 if (app.get('env') === 'development') {
-    app.use(function(err, req, res, next) {
+    app.use(function(err, req, res) {
         res.status(err.status || 500);
         res.render('error', {
             status: err.status || 500,
@@ -77,7 +80,7 @@ if (app.get('env') === 'development') {
     });
 }
 // production error handler no stacktraces leaked to user
-app.use(function(err, req, res, next) {
+app.use(function(err, req, res) {
     res.status(err.status || 500);
     res.render('error', {
         status: err.status || 500,

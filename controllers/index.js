@@ -1,7 +1,8 @@
-var express = require('express'),
-	router = express.Router(),
-	github = require('../helpers/GitHub'),
-	auth = require('../middleware/auth').auth;
+'use strict';
+var express = require('express');
+var router = express.Router();
+var github = require('../helpers/GitHub');
+var auth = require('../middleware/auth').auth;
 	
 require('dotenv').load();
 
@@ -17,13 +18,15 @@ router.get('/', function(req, res){
 });
 
 router.get('/kanban', auth, function(req, res) {
-	var githubUsers = [],
-		githubIssues = [],
-		standupUsers = [],
-		labels = [],
-		users = process.env.ALLOWED_USERS.split(',');
+	var githubUsers = [];
+	var githubIssues = [];
+	var standupUsers = [];
+	var labels = [];
+	var users = process.env.ALLOWED_USERS.split(',');
 
-	var completed = 0, toComplete = 0, usersFetched = 0;
+	var completed = 0;
+	var toComplete = 0;
+	var usersFetched = 0;
 
 	function done(){
 		if(++completed === toComplete){

@@ -1,6 +1,7 @@
-var express = require('express'),
-    router = express.Router(),
-    passport = require('passport');
+'use strict';
+var express = require('express');
+var router = express.Router();
+var passport = require('passport');
 
 // GET /auth/github
 //   Use passport.authenticate() as route middleware to authenticate the
@@ -23,7 +24,7 @@ router.get('/auth/github',
 router.get('/auth/github/callback', 
     passport.authenticate('github', { failureRedirect: '/login' }),
     function(req, res) {
-        res.redirect(req.session.redirect_to || '/');
+        res.redirect(req.session.redirectTo || '/');
     }
 );
 
