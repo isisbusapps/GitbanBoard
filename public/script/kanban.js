@@ -88,8 +88,22 @@
 			$('#filterModal').modal('hide');
 			resizeColumns();
 		};
+		var toggleAll = function toggleAll(e){
+			var formInputs = $(this).parent().next().find('input');
+			if(formInputs.not(':checked').length){
+				formInputs.each(function(){
+					this.checked = true;
+				});
+			}else{
+				formInputs.each(function(){
+					this.checked = false;
+				});
+			}
+			e.preventDefault();
+		};
 
 		$('#saveFilterButton').on('click', saveFilter);
+		$('[data-action="toggleAll"]').on('click', toggleAll);
 		loadFilter();
 	};
 
