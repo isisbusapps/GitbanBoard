@@ -17,6 +17,7 @@
 	<script src="/script/kanban.js"></script>
 	<script>
 		var firebaseRef = new Firebase("{{firebaseurl}}");
+		var userId = {{user.id}};
 		$('#kanbanlink').on('click', function(e){
 			if(!firebaseRef.getAuth()){
 				e.preventDefault();

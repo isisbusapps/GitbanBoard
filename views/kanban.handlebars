@@ -62,42 +62,44 @@
 			</div>
 			<div class="modal-body">
 				<div class="container-fluid">
-					<div class="row">
-						<h3>Users</h3>
-					</div>
-					<div class="row">
-						<ul class="filter-options">
-						{{#each githubusers}}
-							<li>
-								<label><input type="checkbox" checked="checked" id="githubuser-{{this}}" class="js-githubuser" /> {{this}}</label>
-							</li>
-						{{/each}}
-						</ul>
-					</div>
-					<div class="row">
-						<h3>Labels</h3>
-					</div>
-					<div class="row">
-						<ul class="filter-options">
-						{{#each labels}}
-							<li>
-								<label><input type="checkbox" checked="checked" id="label-{{this}}" class="js-label" /> {{this}}</label>
-							</li>
-						{{/each}}
-						</ul>
-					</div>
-					<div class="row">
-						<h3>Repos</h3>
-					</div>
-					<div class="row">
-						<ul class="filter-options">
-						{{#each repos}}
-							<li>
-								<label><input type="checkbox" checked="checked" id="repo-{{this}}" class="js-repo" /> {{this}}</label>
-							</li>
-						{{/each}}
-						</ul>
-					</div>
+					<form id="filterForm">
+						<div class="row">
+							<h3>Users</h3>
+						</div>
+						<div class="row">
+							<ul class="filter-options">
+							{{#each githubusers}}
+								<li>
+									<label><input type="checkbox" checked="checked" id="githubuser-{{this}}" class="js-githubuser" /> {{this}}</label>
+								</li>
+							{{/each}}
+							</ul>
+						</div>
+						<div class="row">
+							<h3>Labels</h3>
+						</div>
+						<div class="row">
+							<ul class="filter-options">
+							{{#each labels}}
+								<li>
+									<label><input type="checkbox" checked="checked" id="label-{{this}}" class="js-label" /> {{this}}</label>
+								</li>
+							{{/each}}
+							</ul>
+						</div>
+						<div class="row">
+							<h3>Repos</h3>
+						</div>
+						<div class="row">
+							<ul class="filter-options">
+							{{#each repos}}
+								<li>
+									<label><input type="checkbox" checked="checked" id="repo-{{this}}" class="js-repo" /> {{this}}</label>
+								</li>
+							{{/each}}
+							</ul>
+						</div>
+					</form>
 				</div>
 			</div>
 			<div class="modal-footer">

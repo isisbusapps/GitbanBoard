@@ -47,6 +47,32 @@
 	};
 
 	var configFilterOptions = function configFilterOptions(){
+		var saveFilter = function saveFilter(){
+			var formInputs = document.getElementById('filterForm').elements;
+			var i=0, len = formInputs.length;
+			var formValues = {};
+			for(;i<len;i++){
+				// Currently only dealing with checkboxes
+				formValues[formInputs[i].id.replace(/\./g,'&46;')] = formInputs[i].checked;
+			}
+			firebaseRef.child("filter").child(userId).update(formValues);
+
+			filterIssues();
+		};
+		var loadFilter = function saveFilter(){
+			firebaseRef.child("filter").child(userId).once("value", function(snapshot){
+				var formValues = snapshot.val();
+				if(formValues){
+					Object.keys(formValues).forEach(function(key){
+						if(formValues.hasOwnProperty(key)){
+							// Currently only dealing with checkboxes
+							document.getElementById(key.replace(/&46;/g,'.')).checked = formValues[key];
+						}
+					})
+				}
+				filterIssues();
+			});			
+		};
 		var filterIssues = function filterIssues(){
 			$('.issue').show();
 			$('.js-githubuser').not(':checked').each(function(){
@@ -63,7 +89,8 @@
 			resizeColumns();
 		};
 
-		$('#saveFilterButton').on('click', filterIssues);
+		$('#saveFilterButton').on('click', saveFilter);
+		loadFilter();
 	};
 
 	$(document).on('firebase-ready', init);
