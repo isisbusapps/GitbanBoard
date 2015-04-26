@@ -19,7 +19,8 @@ router.get('/', function(req, res){
 router.get('/kanban', auth, function(req, res) {
 	github.getIssues(
 	{
-		repos: process.env.REPOS.split(',')
+		repos: process.env.REPOS.split(','),
+		status: 'all'
 	},
 	function(issues){
 		var githubusers = [],

@@ -84,6 +84,9 @@
 			});
 			$('.js-repo').not(':checked').each(function(){
 				$('.issue[data-repo="'+$(this).parent().text().trim()+'"]').hide();
+			});			
+			$('.js-state').not(':checked').each(function(){
+				$('.issue[data-state="'+$(this).parent().text().trim()+'"]').hide();
 			});
 
 			$('#filterModal').modal('hide');

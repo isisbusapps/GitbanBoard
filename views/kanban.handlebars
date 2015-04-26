@@ -24,7 +24,10 @@
 	<div class="row">
 		<div id="backlog-col" class="col-sm-3 issue-col" ondragover="return false">
 			{{#each backlog}}
-				<div class="issue" draggable="true" id="issue{{id}}" data-username="{{user.login}}" data-label="{{#each labels}}{{name}} {{/each}}" data-repo="{{reponame}}">
+				<div class="issue" draggable="true" id="issue{{id}}" 
+					data-username="{{user.login}}" data-label="{{#each labels}}{{name}} {{/each}}" data-repo="{{reponame}}"
+					data-state="{{state}}"
+					>
 					<span class="title">{{title}}</span>
 					<img src="{{user.avatar_url}}" class="avatar" />
 					<div class="description">{{body}}</div>
@@ -100,6 +103,20 @@
 									<label><input type="checkbox" checked="checked" id="repo-{{this}}" class="js-repo" /> {{this}}</label>
 								</li>
 							{{/each}}
+							</ul>
+						</div>
+						<div class="row">
+							<h3>State</h3>
+							<a href="#" data-action="toggleAll">Toggle all</a>
+						</div>
+						<div class="row">
+							<ul class="filter-options">
+								<li>
+									<label><input type="checkbox" checked="checked" id="state-open" class="js-state" /> open</label>
+								</li>
+								<li>
+									<label><input type="checkbox" checked="checked" id="state-closed" class="js-state" /> closed</label>
+								</li>
 							</ul>
 						</div>
 					</form>
