@@ -27,7 +27,7 @@
 	<div class="row">
 		<div id="backlog-col" class="col-sm-3 issue-col" ondragover="return false">
 			{{#each backlog}}
-				<div class="issue" draggable="true" id="issue{{id}}" 
+				<div class="issue hide" draggable="true" id="issue{{id}}"
 					data-username="{{#if assignee}}{{assignee.login}}{{else}}Unassigned{{/if}}" data-label="{{#each labels}}{{name}} {{/each}}" data-repo="{{reponame}}"
 					data-state="{{state}}" data-updated="{{updated_at}}"
 					>
