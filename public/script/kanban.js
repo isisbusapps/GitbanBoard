@@ -8,10 +8,10 @@
 			this.addEventListener('dragstart', startDrag);
 		});
 
+		configFilterOptions();
+
 		firebaseRef.child("issues").on("child_changed", updateIssues);
 		firebaseRef.child("issues").on("child_added", updateIssues);
-
-		configFilterOptions();
 	};
 
 	var resizeColumns = function resizeColumns(){
@@ -43,6 +43,7 @@
 		if($issue.parents(column).length == 0){
 			$issue.remove().appendTo(column);
 		}
+		$('.progress').remove();
 		resizeColumns();
 	};
 
