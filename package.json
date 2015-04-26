@@ -4,7 +4,8 @@
   "description": "GitHub-centric Kanban board",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "./node_modules/less/bin/lessc ./public/style/style.less > ./public/style/style.css"
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,7 @@
     "firebase": "^2.2.4",
     "github": "^0.2.4",
     "handlebars": "^3.0.2",
+    "less": "^2.5.0",
     "moment": "^2.10.2",
     "passport": "^0.2.1",
     "passport-github": "^0.1.5"
