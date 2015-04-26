@@ -53,8 +53,11 @@
 			var i=0, len = formInputs.length;
 			var formValues = {};
 			for(;i<len;i++){
-				// Currently only dealing with checkboxes
-				formValues[formInputs[i].id.replace(/\./g,'&46;')] = formInputs[i].checked;
+				if(formInputs[i].type === "checkbox"){
+					formValues[formInputs[i].id.replace(/\./g,'&46;')] = formInputs[i].checked;
+				}else{
+					formValues[formInputs[i].id.replace(/\./g,'&46;')] = formInputs[i].value;
+				}
 			}
 			firebaseRef.child("filter").child(userId).update(formValues);
 
@@ -66,8 +69,12 @@
 				if(formValues){
 					Object.keys(formValues).forEach(function(key){
 						if(formValues.hasOwnProperty(key)){
-							// Currently only dealing with checkboxes
-							document.getElementById(key.replace(/&46;/g,'.')).checked = formValues[key];
+							var inputElement = document.getElementById(key.replace(/&46;/g,'.'));
+							if(inputElement.type === "checkbox"){
+								inputElement.checked = formValues[key];
+							}else{
+								inputElement.value = formValues[key];
+							}
 						}
 					})
 				}
@@ -88,6 +95,13 @@
 			$('.js-state').not(':checked').each(function(){
 				$('.issue[data-state="'+$(this).parent().text().trim()+'"]').hide();
 			});
+			$('.issue').each(function(){
+				var lastUpdated = $(this).data('updated');
+				var weeks = $('#dateRange').val();
+				if(moment(lastUpdated).isBefore(moment().subtract(weeks, 'weeks'))){
+					$(this).hide();
+				}
+			})
 
 			$('#filterModal').modal('hide');
 			resizeColumns();
