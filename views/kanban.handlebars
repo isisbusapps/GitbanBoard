@@ -1,185 +1,185 @@
 <div id="kanban-board" class="container-fluid">
-	<div class="row text-center">
-		<div class="col-xs-4 text-left">
-			<a href="#" class="btn btn-success btn-lg" id="standupBtn" data-toggle="modal" data-target="#standupModal">Start Stand-up</a>
-		</div>
-		<div class="col-xs-4">
-			<a href="#" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#filterModal">
-				Filter
-			</a>
-			<br/>
-		</div>
-	</div>
-	<div class="row text-center">
-		<div id="backlog-col-header" class="col-sm-3">
-			<h3>Backlog</h3>
-		</div>
-		<div id="todo-col-header" class="col-sm-3">
-			<h3>ToDo</h3>
-		</div>
-		<div id="inprogress-col-header" class="col-sm-3">
-			<h3>In Progress</h3>
-		</div>
-		<div id="done-col-header" class="col-sm-3">
-			<h3>Done</h3>
-		</div>
-	</div>
-	<div class="row">
-		<div id="backlog-col" class="col-sm-3 issue-col" ondragover="return false">
-			{{#each backlog}}
-				<div class="issue hide" draggable="true" id="issue{{id}}"
-					data-username="{{#if assignee}}{{assignee.login}}{{else}}Unassigned{{/if}}" data-label="{{#each labels}}{{name}} {{/each}}" data-repo="{{reponame}}"
-					data-state="{{state}}" data-updated="{{updated_at}}"
-					>
-					<span class="title">{{title}}</span>
-					<img src="{{assignee.avatar_url}}" class="avatar" />
-					<div class="description">{{body}}</div>
-					<div class="labels">
-						{{#each labels}}
-							<span style="background-color:#{{color}}">{{name}}</span>
-						{{/each}}
-					</div>
-					<div class="baseline">
-						<span class="updated">{{formatDate updated_at}}</span>
-						|
-						<span class="reponum">{{reponame}}#{{number}}</span>
-						{{#if (is state "closed")}}
-						| <span class="label label-danger">&#10004; Closed</span> 
-						{{/if}}
-					</div>
-				</div>
-			{{/each}}
-		</div>
-		<div id="todo-col" class="col-sm-3 issue-col" ondragover="return false">
-			
-		</div>
-		<div id="inprogress-col" class="col-sm-3 issue-col" ondragover="return false">
-			
-		</div>
-		<div id="done-col" class="col-sm-3 issue-col" ondragover="return false">
-			
-		</div>
-	</div>
+    <div class="row text-center">
+        <div class="col-xs-4 text-left">
+            <a href="#" class="btn btn-success btn-lg" id="standupBtn" data-toggle="modal" data-target="#standupModal">Start Stand-up</a>
+        </div>
+        <div class="col-xs-4">
+            <a href="#" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#filterModal">
+                Filter
+            </a>
+            <br/>
+        </div>
+    </div>
+    <div class="row text-center">
+        <div id="backlog-col-header" class="col-sm-3">
+            <h3>Backlog</h3>
+        </div>
+        <div id="todo-col-header" class="col-sm-3">
+            <h3>ToDo</h3>
+        </div>
+        <div id="inprogress-col-header" class="col-sm-3">
+            <h3>In Progress</h3>
+        </div>
+        <div id="done-col-header" class="col-sm-3">
+            <h3>Done</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div id="backlog-col" class="col-sm-3 issue-col" ondragover="return false">
+            {{#each backlog}}
+                <div class="issue hide" draggable="true" id="issue{{id}}"
+                    data-username="{{#if assignee}}{{assignee.login}}{{else}}Unassigned{{/if}}" data-label="{{#each labels}}{{name}} {{/each}}" data-repo="{{reponame}}"
+                    data-state="{{state}}" data-updated="{{updated_at}}"
+                    >
+                    <span class="title">{{title}}</span>
+                    <img src="{{assignee.avatar_url}}" class="avatar" />
+                    <div class="description">{{body}}</div>
+                    <div class="labels">
+                        {{#each labels}}
+                            <span style="background-color:#{{color}}">{{name}}</span>
+                        {{/each}}
+                    </div>
+                    <div class="baseline">
+                        <span class="updated">{{formatDate updated_at}}</span>
+                        |
+                        <span class="reponum">{{reponame}}#{{number}}</span>
+                        {{#if (is state "closed")}}
+                        | <span class="label label-danger">&#10004; Closed</span> 
+                        {{/if}}
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+        <div id="todo-col" class="col-sm-3 issue-col" ondragover="return false">
+            
+        </div>
+        <div id="inprogress-col" class="col-sm-3 issue-col" ondragover="return false">
+            
+        </div>
+        <div id="done-col" class="col-sm-3 issue-col" ondragover="return false">
+            
+        </div>
+    </div>
 </div>
 
 <div class="modal fade" id="filterModal">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title">Filter</h4>
-			</div>
-			<div class="modal-body">
-				<div class="container-fluid">
-					<form id="filterForm">
-						<div class="row">
-							<h3>Users</h3>
-							<a href="#" data-action="toggleAll">Toggle all</a>
-						</div>
-						<div class="row">
-							<ul class="filter-options">
-							{{#each githubusers}}
-								<li>
-									<label><input type="checkbox" checked="checked" id="githubuser-{{this}}" class="js-githubuser" /> {{this}}</label>
-								</li>
-							{{/each}}
-								<li>
-									<label><input type="checkbox" checked="checked" id="githubuser-Unassigned" class="js-githubuser" /> Unassigned</label>
-								</li>
-							</ul>
-						</div>
-						<div class="row">
-							<h3>Labels</h3>
-							<a href="#" data-action="toggleAll">Toggle all</a>
-						</div>
-						<div class="row">
-							<ul class="filter-options">
-							{{#each labels}}
-								<li>
-									<label><input type="checkbox" checked="checked" id="label-{{this}}" class="js-label" /> {{this}}</label>
-								</li>
-							{{/each}}
-							</ul>
-						</div>
-						<div class="row">
-							<h3>Repos</h3>
-							<a href="#" data-action="toggleAll">Toggle all</a>
-						</div>
-						<div class="row">
-							<ul class="filter-options">
-							{{#each repos}}
-								<li>
-									<label><input type="checkbox" checked="checked" id="repo-{{this}}" class="js-repo" /> {{this}}</label>
-								</li>
-							{{/each}}
-							</ul>
-						</div>
-						<div class="row">
-							<h3>State</h3>
-							<a href="#" data-action="toggleAll">Toggle all</a>
-						</div>
-						<div class="row">
-							<ul class="filter-options">
-								<li>
-									<label><input type="checkbox" checked="checked" id="state-open" class="js-state" /> open</label>
-								</li>
-								<li>
-									<label><input type="checkbox" checked="checked" id="state-closed" class="js-state" /> closed</label>
-								</li>
-							</ul>
-						</div>
-						<div class="row">
-							<h3>Date Range</h3>
-						</div>
-						<div class="row">
-							<ul class="filter-options">
-								<li>
-									<label>Show issues updated in the last <input type="text" id="dateRange" value="2" size="1" class="text-center" /> weeks.
-								</li>
-							</ul>
-						</div>
-					</form>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary" id="saveFilterButton">Save changes</button>
-			</div>
-		</div>
-	</div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Filter</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <form id="filterForm">
+                        <div class="row">
+                            <h3>Users</h3>
+                            <a href="#" data-action="toggleAll">Toggle all</a>
+                        </div>
+                        <div class="row">
+                            <ul class="filter-options">
+                            {{#each githubusers}}
+                                <li>
+                                    <label><input type="checkbox" checked="checked" id="githubuser-{{this}}" class="js-githubuser" /> {{this}}</label>
+                                </li>
+                            {{/each}}
+                                <li>
+                                    <label><input type="checkbox" checked="checked" id="githubuser-Unassigned" class="js-githubuser" /> Unassigned</label>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="row">
+                            <h3>Labels</h3>
+                            <a href="#" data-action="toggleAll">Toggle all</a>
+                        </div>
+                        <div class="row">
+                            <ul class="filter-options">
+                            {{#each labels}}
+                                <li>
+                                    <label><input type="checkbox" checked="checked" id="label-{{this}}" class="js-label" /> {{this}}</label>
+                                </li>
+                            {{/each}}
+                            </ul>
+                        </div>
+                        <div class="row">
+                            <h3>Repos</h3>
+                            <a href="#" data-action="toggleAll">Toggle all</a>
+                        </div>
+                        <div class="row">
+                            <ul class="filter-options">
+                            {{#each repos}}
+                                <li>
+                                    <label><input type="checkbox" checked="checked" id="repo-{{this}}" class="js-repo" /> {{this}}</label>
+                                </li>
+                            {{/each}}
+                            </ul>
+                        </div>
+                        <div class="row">
+                            <h3>State</h3>
+                            <a href="#" data-action="toggleAll">Toggle all</a>
+                        </div>
+                        <div class="row">
+                            <ul class="filter-options">
+                                <li>
+                                    <label><input type="checkbox" checked="checked" id="state-open" class="js-state" /> open</label>
+                                </li>
+                                <li>
+                                    <label><input type="checkbox" checked="checked" id="state-closed" class="js-state" /> closed</label>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="row">
+                            <h3>Date Range</h3>
+                        </div>
+                        <div class="row">
+                            <ul class="filter-options">
+                                <li>
+                                    <label>Show issues updated in the last <input type="text" id="dateRange" value="2" size="1" class="text-center" /> weeks.
+                                </li>
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveFilterButton">Save changes</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="modal fade" id="standupModal">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title">Select Person</h4>
-			</div>
-			<div class="modal-body">
-				<div class="container-fluid">
-					<div class="row">
-						<ul class="standupList">
-						{{#each standupUsers}}
-							<li>
-								<a href="#" data-standup-user="{{login}}">
-									<img src="{{avatar_url}}" /><br/>
-									{{name}}<br/>({{login}})
-								</a>
-							</li>
-						{{/each}}
-						</ul>
-					</div>
-					<div class="row">
-						<br/>
-						<a href="#" class="btn btn-danger pull-right js-endStandup">End Standup</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Select Person</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <ul class="standupList">
+                        {{#each standupUsers}}
+                            <li>
+                                <a href="#" data-standup-user="{{login}}">
+                                    <img src="{{avatar_url}}" /><br/>
+                                    {{name}}<br/>({{login}})
+                                </a>
+                            </li>
+                        {{/each}}
+                        </ul>
+                    </div>
+                    <div class="row">
+                        <br/>
+                        <a href="#" class="btn btn-danger pull-right js-endStandup">End Standup</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="progress">
-	<div class="progress-bar progress-bar-striped active" style="width:100%">Loading</div>
+    <div class="progress-bar progress-bar-striped active" style="width:100%">Loading</div>
 </div>

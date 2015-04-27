@@ -1,47 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Gitban Board</title>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-	<link rel="stylesheet" href="/style/style.css">
+    <title>Gitban Board</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-	{{> header }}
+    {{> header }}
 
-	{{{body}}}
+    {{{body}}}
 
-	{{> footer }}
+    {{> footer }}
 
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script>
-	<script src="/script/drag-drop-polyfill.js" async defer></script>
-	<script src="//cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
-	<script src="/script/kanban.js"></script>
-	<script>
-		var firebaseRef = new Firebase("{{firebaseurl}}");
-		var userId = {{user.id}};
-		$('#kanbanlink').on('click', function(e){
-			if(!firebaseRef.getAuth()){
-				e.preventDefault();
-				firebaseRef.authWithOAuthPopup(
-					"github", 
-					function(error, authData) {
-						window.location = $('#kanbanlink').attr('href');
-					}, 
-					{scope: 'repo'}
-				);
-			}
-		});
-		var checkFirebaseReady = function checkFirebaseReady(){
-			if(firebaseRef.getAuth()){
-				$(document).trigger('firebase-ready');
-			}else{
-				setTimeout(checkFirebaseReady,500);
-			}
-		};
-		setTimeout(checkFirebaseReady,0);
-		
-	</script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script>
+    <script src="/script/drag-drop-polyfill.js" async defer></script>
+    <script src="//cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
+    <script src="/script/kanban.js"></script>
+    <script>
+        var firebaseRef = new Firebase("{{firebaseurl}}");
+        var userId = {{user.id}};
+        $('#kanbanlink').on('click', function(e){
+            if(!firebaseRef.getAuth()){
+                e.preventDefault();
+                firebaseRef.authWithOAuthPopup(
+                    "github", 
+                    function(error, authData) {
+                        window.location = $('#kanbanlink').attr('href');
+                    }, 
+                    {scope: 'repo'}
+                );
+            }
+        });
+        var checkFirebaseReady = function checkFirebaseReady(){
+            if(firebaseRef.getAuth()){
+                $(document).trigger('firebase-ready');
+            }else{
+                setTimeout(checkFirebaseReady,500);
+            }
+        };
+        setTimeout(checkFirebaseReady,0);
+        
+    </script>
 </body>
 </html>
