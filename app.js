@@ -31,7 +31,7 @@ passport.use(new GitHubStrategy(
 function(accessToken, refreshToken, profile, done) {
         // Make sure user is allowed
         if (process.env.ALLOWED_USERS.split(',').indexOf(profile.username) >= 0) {
-            return done(null, profile);
+            return done(null, {profile: profile, token: accessToken});
         } else {
             return done('Invalid user');
         }

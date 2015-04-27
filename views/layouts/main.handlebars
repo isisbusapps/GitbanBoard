@@ -17,22 +17,10 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script>
     <script src="/script/drag-drop-polyfill.js" async defer></script>
     <script src="//cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
-    <script src="/script/kanban.js"></script>
     <script>
         var firebaseRef = new Firebase("{{firebaseurl}}");
-        var userId = {{user.id}};
-        $('#kanbanlink').on('click', function(e) {
-            if (!firebaseRef.getAuth()) {
-                e.preventDefault();
-                firebaseRef.authWithOAuthPopup(
-                    "github",
-                    function(error, authData) {
-                        window.location = $('#kanbanlink').attr('href');
-                    },
-                    {scope: 'repo'}
-                );
-            }
-        });
+        var userId = {{#if user.profile.id }}{{user.profile.id}}{{else}}undefined{{/if}};
+        var githubToken = '{{#if user.token }}{{user.token}}{{/if}}';
         var checkFirebaseReady = function checkFirebaseReady() {
             if (firebaseRef.getAuth()) {
                 $(document).trigger('firebase-ready');
@@ -41,7 +29,7 @@
             }
         };
         setTimeout(checkFirebaseReady,0);
-
     </script>
+    <script src="/script/kanban.js"></script>
 </body>
 </html>

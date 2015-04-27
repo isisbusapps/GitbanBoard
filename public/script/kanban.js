@@ -174,7 +174,15 @@
         $('#standupModal').modal('hide');
     };
 
-    $('#standupBtn').on('click', standupMode);
-    $(document).on('firebase-ready', init);
-    resizeColumns();
+    if (document.location.pathname.indexOf('kanban') >= 0) {
+        firebaseRef.authWithOAuthToken(
+            "github",
+            githubToken,
+            function(error, authData) {},
+            {scope: 'repo'}
+        );
+        $('#standupBtn').on('click', standupMode);
+        $(document).on('firebase-ready', init);
+        resizeColumns();
+    }
 }());
