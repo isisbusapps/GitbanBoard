@@ -3,7 +3,7 @@
 Contributions are very welcome. The best way to contribute is to use it and file bugs as issues.
 
 ## Code Style
-**JavaScript** - All JavaScript should follwo the [AirBnb JavaScript Style Guid](https://github.com/airbnb/javascript) ([.jshintrc](https://github.com/airbnb/javascript/blob/master/linters/jshintrc))
+**JavaScript** - All JavaScript should follwo the [AirBnb JavaScript Style Guid](https://github.com/airbnb/javascript). Code style can be checked with [JSCS](https://github.com/jscs-dev/node-jscs) using `jscs *.js **/*.js`
 
 ## Issues
 
