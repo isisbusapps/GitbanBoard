@@ -20,8 +20,20 @@
     <script>
         var firebaseRef = new Firebase("{{firebaseurl}}");
         var userId = {{#if user.profile.id }}{{user.profile.id}}{{else}}undefined{{/if}};
-        var githubToken = '{{#if user.token }}{{user.token}}{{/if}}';
+        var githubToken = (function() {
+            $.get("/accessToken", function(data) {
+                githubToken = data;
+            });
+        }());
         var checkFirebaseReady = function checkFirebaseReady() {
+            if(typeof githubToken === 'string') {
+                firebaseRef.authWithOAuthToken(
+                    "github",
+                    githubToken,
+                    function(error, authData) {},
+                    {scope: 'repo'}
+                );
+            }
             if (firebaseRef.getAuth()) {
                 $(document).trigger('firebase-ready');
             } else {

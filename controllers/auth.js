@@ -26,6 +26,14 @@ router.get('/auth/github/callback',
         res.redirect(req.session.redirectTo || '/');
     });
 
+router.get('/accessToken', function(req, res) {
+    if (req.isAuthenticated()) {
+        res.send(req.user.token);
+    } else {
+        res.send('');
+    }
+});
+
 router.get('/logout', function(req, res) {
     req.logout();
     res.render('logout');
