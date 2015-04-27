@@ -1,0 +1,21 @@
+{
+    "preset": "airbnb",
+    "fileExtensions": [ ".js" ],
+
+    "requirePaddingNewLinesAfterBlocks": null,
+    "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties", // Disabled due to requirement of Github API
+    "requireParenthesesAroundIIFE": true,
+    "maximumLineLength": 100,
+    "validateLineBreaks": "LF",
+    "validateIndentation": 4,
+
+    "disallowKeywords": ["with"],
+    "disallowSpacesInsideObjectBrackets": null,
+    "disallowImplicitTypeConversion": ["string"],
+
+    "safeContextKeyword": "_this",
+
+    "excludeFiles": [
+        "*min.js"
+    ]
+}

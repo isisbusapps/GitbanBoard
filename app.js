@@ -22,21 +22,21 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 passport.use(new GitHubStrategy(
-    {
-        clientID: process.env.GH_KEY,
-        clientSecret: process.env.GH_SECRET,
-        callbackURL: '/auth/github/callback',
-        scope: 'repo'
-    },
-    function(accessToken, refreshToken, profile, done) {
+{
+    clientID: process.env.GH_KEY,
+    clientSecret: process.env.GH_SECRET,
+    callbackURL: '/auth/github/callback',
+    scope: 'repo'
+},
+function(accessToken, refreshToken, profile, done) {
         // Make sure user is allowed
-        if(process.env.ALLOWED_USERS.split(',').indexOf(profile.username) >= 0){
-            return done(null, profile);            
-        }else{
+        if (process.env.ALLOWED_USERS.split(',').indexOf(profile.username) >= 0) {
+            return done(null, profile);
+        } else {
             return done('Invalid user');
         }
     }
-));
+    ));
 passport.serializeUser(function(user, done) {
     done(null, user);
 });
@@ -46,15 +46,15 @@ passport.deserializeUser(function(user, done) {
 });
 
 app.engine('handlebars', expressHbs.create({
-        defaultLayout:'main',
-        helpers: {
-            formatDate: function (date) { 
-                return moment(date).format('ddd DD-MM-YY'); 
-            },
-            firebaseurl: function () { return process.env.FIRE_URL; },
-            is: function(a, b){ return a === b; }
-        }
-    }).engine);
+    defaultLayout:'main',
+    helpers: {
+        formatDate: function(date) {
+            return moment(date).format('ddd DD-MM-YY');
+        },
+        firebaseurl: function() { return process.env.FIRE_URL; },
+        is: function(a, b) { return a === b; }
+    }
+}).engine);
 app.set('view engine', 'handlebars');
 
 app.use(express.static(__dirname + '/public'));
@@ -79,6 +79,7 @@ if (app.get('env') === 'development') {
         });
     });
 }
+
 // production error handler no stacktraces leaked to user
 app.use(function(err, req, res) {
     res.status(err.status || 500);
@@ -90,5 +91,5 @@ app.use(function(err, req, res) {
 });
 
 app.listen(process.env.PORT, function() {
-  console.log('Listening on port '+process.env.PORT+'...');
+    console.log('Listening on port ' + process.env.PORT + '...');
 });

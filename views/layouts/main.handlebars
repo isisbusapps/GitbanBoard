@@ -21,27 +21,27 @@
     <script>
         var firebaseRef = new Firebase("{{firebaseurl}}");
         var userId = {{user.id}};
-        $('#kanbanlink').on('click', function(e){
-            if(!firebaseRef.getAuth()){
+        $('#kanbanlink').on('click', function(e) {
+            if (!firebaseRef.getAuth()) {
                 e.preventDefault();
                 firebaseRef.authWithOAuthPopup(
-                    "github", 
+                    "github",
                     function(error, authData) {
                         window.location = $('#kanbanlink').attr('href');
-                    }, 
+                    },
                     {scope: 'repo'}
                 );
             }
         });
-        var checkFirebaseReady = function checkFirebaseReady(){
-            if(firebaseRef.getAuth()){
+        var checkFirebaseReady = function checkFirebaseReady() {
+            if (firebaseRef.getAuth()) {
                 $(document).trigger('firebase-ready');
-            }else{
+            } else {
                 setTimeout(checkFirebaseReady,500);
             }
         };
         setTimeout(checkFirebaseReady,0);
-        
+
     </script>
 </body>
 </html>

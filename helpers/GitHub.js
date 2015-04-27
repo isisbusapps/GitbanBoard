@@ -17,23 +17,24 @@ github.authenticate({
 });
 
 module.exports = {
-    getIssues : function(opts, callback){
-        var count = 0, 
-            issues = [],
-            total;
+    getIssues: function(opts, callback) {
+        var count = 0;
+        var issues = [];
+        var total;
 
-        if(typeof opts.repos === 'string'){
+        if (typeof opts.repos === 'string') {
             opts.repos = [opts.repos];
         }
+
         total = opts.repos.length;
-        
-        function repoDone(){
-            if(++count === total){
+
+        function repoDone() {
+            if (++count === total) {
                 callback(issues);
             }
         }
 
-        function getFromGithub(repo, page){
+        function getFromGithub(repo, page) {
             page = page || 1;
             github.issues.repoIssues(
             {
@@ -43,29 +44,32 @@ module.exports = {
                 per_page: 100,
                 page: page
             },
-            function(err, res){
-                if(err) console.log('Error: '+err);
-                if(!res.length) return repoDone();
-                res.forEach(function(issue, issueKey){
-                    if(res.hasOwnProperty(issueKey) && !issue.pull_request){
+            function(err, res) {
+                if (err) console.log('Error: ' + err);
+                if (!res.length) return repoDone();
+                function processIssue(issue, issueKey) {
+                    if (res.hasOwnProperty(issueKey) && !issue.pull_request) {
                         issue.reponame = repo;
                         issues.push(issue);
                     }
-                });
+                }
+
+                res.forEach(processIssue);
                 getFromGithub(repo, ++page);
             });
         }
 
-        opts.repos.forEach(function(repo){
+        opts.repos.forEach(function(repo) {
             getFromGithub(repo);
         });
     },
-    getUser : function(username, callback){
+
+    getUser: function(username, callback) {
         github.user.getFrom(
         {
             user: username
         },
-        function(err, res){
+        function(err, res) {
             callback(res);
         });
     }

@@ -6,14 +6,15 @@ var auth = require('../middleware/auth').auth;
 
 require('dotenv').load();
 
-router.get('*', function(req, res, next){
-    if (req.isAuthenticated()) { 
+router.get('*', function(req, res, next) {
+    if (req.isAuthenticated()) {
         res.locals.user = req.user;
     }
-    return next(); 
+
+    return next();
 });
 
-router.get('/', function(req, res){
+router.get('/', function(req, res) {
     res.render('index');
 });
 
@@ -28,15 +29,18 @@ router.get('/kanban', auth, function(req, res) {
     var toComplete = 0;
     var usersFetched = 0;
 
-    function done(){
-        if(++completed === toComplete){
+    function sortStandupUsers(a, b) {
+        if (a.login > b.login) return 1;
+        if (a.login === b.login) return 0;
+        if (a.login < b.login) return -1;
+    }
+
+    function done() {
+        if (++completed === toComplete) {
+
             // Order isn't guaranteed so manually sort by username
-            standupUsers = standupUsers.sort(function(a, b){
-                if(a.login > b.login) return 1;
-                if(a.login === b.login) return 0;
-                if(a.login < b.login) return -1;
-            });
-            res.render('kanban', 
+            standupUsers = standupUsers.sort(sortStandupUsers);
+            res.render('kanban',
                 {
                     backlog: githubIssues,
                     githubusers: githubUsers,
@@ -47,38 +51,42 @@ router.get('/kanban', auth, function(req, res) {
             );
         }
     }
+
     // Fetch all users
     toComplete++;
-    users.forEach(function(username){
-        github.getUser(username, function(githubUser){
+    users.forEach(function(username) {
+        github.getUser(username, function(githubUser) {
             standupUsers.push(githubUser);
-            if(++usersFetched === users.length){
+            if (++usersFetched === users.length) {
                 done();
             }
         });
     });
+
     // Fetch all issues
     toComplete++;
+    function processIssue(issue) {
+        if (issue.assignee && githubUsers.indexOf(issue.assignee.login) < 0) {
+            githubUsers.push(issue.assignee.login);
+        }
+
+        issue.labels.forEach(function(label) {
+            if (labels.indexOf(label.name) < 0) {
+                labels.push(label.name);
+            }
+        });
+    }
+
     github.getIssues(
         {
             repos: process.env.REPOS.split(','),
             status: 'all'
         },
-        function(issues){
-            issues.forEach(function(issue){
-                if(issue.assignee && githubUsers.indexOf(issue.assignee.login) < 0){
-                    githubUsers.push(issue.assignee.login);
-                }
-                issue.labels.forEach(function(label){
-                    if(labels.indexOf(label.name) < 0){
-                        labels.push(label.name);
-                    }
-                });
-            });
+        function(issues) {
+            issues.forEach(processIssue);
             githubIssues = issues;
             done();
-        }
-    );
+        });
 });
 
 module.exports = router;

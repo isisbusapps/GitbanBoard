@@ -1,12 +1,12 @@
 'use strict';
 /* global firebaseRef, moment, userId */
-(function(){
-    
-    var init = function init(){
-        $('.issue-col').each(function(){
+(function() {
+
+    var init = function init() {
+        $('.issue-col').each(function() {
             this.addEventListener('drop', onDrop);
         });
-        $('.issue').each(function(){
+        $('.issue').each(function() {
             this.addEventListener('dragstart', startDrag);
         });
 
@@ -17,7 +17,7 @@
         firebaseRef.child('standup').on('value', updateStandup);
     };
 
-    var resizeColumns = function resizeColumns(){
+    var resizeColumns = function resizeColumns() {
         var colHeight =  -1;
         $('.issue-col').each(function() {
             $(this).height('initial');
@@ -27,50 +27,50 @@
         $('.issue-col').height(colHeight);
     };
 
-    var startDrag = function startDrag(e){
+    var startDrag = function startDrag(e) {
         e.dataTransfer.setData('text/plain', this.id);
     };
-    var onDrop = function onDrop(e){
-        var $issue = $('#'+event.dataTransfer.getData('text/plain'));
+    var onDrop = function onDrop(e) {
+        var $issue = $('#' + event.dataTransfer.getData('text/plain'));
         var $newCol = $(e.target).closest('.issue-col');
         $issue.remove().appendTo($newCol);
         firebaseRef.child('issues').child($issue.attr('id')).update({
-            'id':$issue.attr('id'),
-            'column':$newCol.attr('id')
+            id: $issue.attr('id'),
+            column: $newCol.attr('id')
         });
     };
 
-    var updateIssues = function updateIssues(snapshot){
-        var $issue = $('#'+snapshot.val().id);
-        var column = '#'+snapshot.val().column;
-        if($issue.parents(column).length === 0){
+    var updateIssues = function updateIssues(snapshot) {
+        var $issue = $('#' + snapshot.val().id);
+        var column = '#' + snapshot.val().column;
+        if ($issue.parents(column).length === 0) {
             $issue.remove().appendTo(column);
         }
         $('.progress').remove();
         resizeColumns();
     };
 
-    var filterIssues = function filterIssues(){
-        function getParentText(self){
+    var filterIssues = function filterIssues() {
+        function getParentText(self) {
             return $(self).parent().text().trim();
         }
         $('.issue').removeClass('hide');
-        $('.js-githubuser').not(':checked').each(function(){
-            $('.issue[data-username="'+getParentText(this)+'"]').addClass('hide');
+        $('.js-githubuser').not(':checked').each(function() {
+            $('.issue[data-username="' + getParentText(this) + '"]').addClass('hide');
         });
-        $('.js-label').not(':checked').each(function(){
-            $('.issue[data-label*="'+getParentText(this)+'"]').addClass('hide');
+        $('.js-label').not(':checked').each(function() {
+            $('.issue[data-label*="' + getParentText(this) + '"]').addClass('hide');
         });
-        $('.js-repo').not(':checked').each(function(){
-            $('.issue[data-repo="'+getParentText(this)+'"]').addClass('hide');
-        });         
-        $('.js-state').not(':checked').each(function(){
-            $('.issue[data-state="'+getParentText(this)+'"]').addClass('hide');
+        $('.js-repo').not(':checked').each(function() {
+            $('.issue[data-repo="' + getParentText(this) + '"]').addClass('hide');
         });
-        $('.issue').each(function(){
+        $('.js-state').not(':checked').each(function() {
+            $('.issue[data-state="' + getParentText(this) + '"]').addClass('hide');
+        });
+        $('.issue').each(function() {
             var lastUpdated = $(this).data('updated');
             var weeks = $('#dateRange').val();
-            if(moment(lastUpdated).isBefore(moment().subtract(weeks, 'weeks'))){
+            if (moment(lastUpdated).isBefore(moment().subtract(weeks, 'weeks'))) {
                 $(this).addClass('hide');
             }
         });
@@ -79,17 +79,18 @@
         resizeColumns();
     };
 
-    var configFilterOptions = function configFilterOptions(){
-        var saveFilter = function saveFilter(){
+    var configFilterOptions = function configFilterOptions() {
+        var saveFilter = function saveFilter() {
             var formInputs = document.getElementById('filterForm').elements;
-            var i=0, len = formInputs.length;
+            var i = 0;
+            var len = formInputs.length;
             var formValues = {};
             var inputId;
-            for(;i<len;i++){
-                inputId = formInputs[i].id.replace(/\./g,'&46;');
-                if(formInputs[i].type === 'checkbox'){
+            for (; i < len; i++) {
+                inputId = formInputs[i].id.replace(/\./g, '&46;');
+                if (formInputs[i].type === 'checkbox') {
                     formValues[inputId] = formInputs[i].checked;
-                }else{
+                } else {
                     formValues[inputId] = formInputs[i].value;
                 }
             }
@@ -97,39 +98,40 @@
 
             filterIssues();
         };
-        var loadFilter = function saveFilter(){
+        var loadFilter = function saveFilter() {
             var filters = firebaseRef.child('filter');
-            filters.child(userId).once('value', function(snapshot){
+            filters.child(userId).once('value', function(snapshot) {
                 var formValues = snapshot.val();
                 var inputElement;
-                if(formValues){
-                    Object.keys(formValues).forEach(function(key){
-                        if(formValues.hasOwnProperty(key)){
-                            inputElement = document.getElementById(key.replace(/&46;/g,'.'));
-                            if(inputElement){
-                                if(inputElement.type === 'checkbox'){
+                if (formValues) {
+                    Object.keys(formValues).forEach(function(key) {
+                        if (formValues.hasOwnProperty(key)) {
+                            inputElement = document.getElementById(key.replace(/&46;/g, '.'));
+                            if (inputElement) {
+                                if (inputElement.type === 'checkbox') {
                                     inputElement.checked = formValues[key];
-                                }else{
+                                } else {
                                     inputElement.value = formValues[key];
-                                }                               
+                                }
                             }
                         }
                     });
                 }
                 filterIssues();
-            });         
+            });
         };
-        var toggleAll = function toggleAll(e){
+        var toggleAll = function toggleAll(e) {
             var formInputs = $(this).parent().next().find('input');
-            if(formInputs.not(':checked').length){
-                formInputs.each(function(){
+            if (formInputs.not(':checked').length) {
+                formInputs.each(function() {
                     this.checked = true;
                 });
-            }else{
-                formInputs.each(function(){
+            } else {
+                formInputs.each(function() {
                     this.checked = false;
                 });
             }
+
             e.preventDefault();
         };
 
@@ -138,35 +140,37 @@
         loadFilter();
     };
 
-    var standupMode = function standupMode(){
-        var endStandup = function endStandup(){
+    var standupMode = function standupMode() {
+        var endStandup = function endStandup() {
             firebaseRef.child('standup').remove();
         };
-        var selectUser = function selectUser(){
+        var selectUser = function selectUser() {
             var username = $(this).data('standup-user');
             firebaseRef.child('standup').update({
-                'username':username
+                username: username
             });
         };
         $('[data-standup-user]').on('click', selectUser);
         $('.js-endStandup').on('click', endStandup);
     };
 
-    var updateStandup = function updateStandup(snapshot){
-        if(snapshot.val()){
+    var updateStandup = function updateStandup(snapshot) {
+        if (snapshot.val()) {
             var username = snapshot.val().username;
             $('#standupBtn').text('Select Next Person');
-            $('.js-githubuser').each(function(){
+            $('.js-githubuser').each(function() {
                 this.checked = false;
             });
-            if($('#githubuser-'+username).length){
-                $('#githubuser-'+username)[0].checked = true;
+            if ($('#githubuser-' + username).length) {
+                $('#githubuser-' + username)[0].checked = true;
             }
+
             filterIssues();
-        }else{
+        } else {
             $('#standupBtn').text('Start Stand-up');
             configFilterOptions();
         }
+
         $('#standupModal').modal('hide');
     };
 
