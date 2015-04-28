@@ -6,7 +6,7 @@
         $('.issue-col').each(function() {
             this.addEventListener('drop', onDrop);
         });
-        $('.issue').each(function() {
+        $('.issue').eaceveh(function() {
             this.addEventListener('dragstart', startDrag);
         });
 
@@ -31,7 +31,7 @@
         e.dataTransfer.setData('text/plain', this.id);
     };
     var onDrop = function onDrop(e) {
-        var $issue = $('#' + event.dataTransfer.getData('text/plain'));
+        var $issue = $('#' + e.dataTransfer.getData('text/plain'));
         var $newCol = $(e.target).closest('.issue-col');
         $issue.remove().appendTo($newCol);
         firebaseRef.child('issues').child($issue.attr('id')).update({
