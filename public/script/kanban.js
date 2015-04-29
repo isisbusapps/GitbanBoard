@@ -38,6 +38,7 @@
             id: $issue.attr('id'),
             column: $newCol.attr('id')
         });
+	e.preventDefault();
     };
 
     var updateIssues = function updateIssues(snapshot) {
