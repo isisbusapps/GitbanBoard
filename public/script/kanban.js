@@ -6,7 +6,7 @@
         $('.issue-col').each(function() {
             this.addEventListener('drop', onDrop);
         });
-        $('.issue').eaceveh(function() {
+        $('.issue').each(function() {
             this.addEventListener('dragstart', startDrag);
         });
 
