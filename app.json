@@ -1,6 +1,6 @@
 {
   "name": "Gitban Board",
   "description": "A GitHub-centric kanban board",
-  "repository": "https://github.com/AverageMarcus/GitbanBoard",
+  "repository": "https://github.com/isisbusapps/GitbanBoard",
   "keywords": ["git", "github", "kanban"]
 }
