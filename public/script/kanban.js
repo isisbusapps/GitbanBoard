@@ -3,6 +3,8 @@
 (function() {
 
     var init = function init() {
+        moveToSwimlanes();
+
         $('.issue-col').each(function() {
             this.addEventListener('drop', onDrop);
         });
@@ -11,7 +13,6 @@
         });
 
         configFilterOptions();
-        moveToSwimlanes();
 
         firebaseRef.child('issues').on('child_changed', updateIssues);
         firebaseRef.child('issues').on('child_added', updateIssues);
@@ -20,10 +21,10 @@
 
     var moveToSwimlanes = function moveToSwimlanes() {
         var assignees = [];
-        var backlogColumn = $('<div/>').addClass('col-sm-3 issue-col').attr('data-column', 'backlog-col').on('dragover', function(){return false;});
-        var todoColumn = $('<div/>').addClass('col-sm-3 issue-col').attr('data-column', 'todo-col').on('dragover', function(){return false;});
-        var inprogressColumn = $('<div/>').addClass('col-sm-3 issue-col').attr('data-column', 'inprogress-col').on('dragover', function(){return false;});
-        var doneColumn = $('<div/>').addClass('col-sm-3 issue-col').attr('data-column', 'done-col').on('dragover', function(){return false;});
+        var backlogColumn = $('<div/>').addClass('col-sm-3 issue-col').attr('data-column', 'backlog-col').on('dragover', function(){return false;}).attr('ondragover', 'return false;');
+        var todoColumn = $('<div/>').addClass('col-sm-3 issue-col').attr('data-column', 'todo-col').on('dragover', function(){return false;}).attr('ondragover', 'return false;');
+        var inprogressColumn = $('<div/>').addClass('col-sm-3 issue-col').attr('data-column', 'inprogress-col').on('dragover', function(){return false;}).attr('ondragover', 'return false;');
+        var doneColumn = $('<div/>').addClass('col-sm-3 issue-col').attr('data-column', 'done-col').on('dragover', function(){return false;}).attr('ondragover', 'return false;');
 
         $('.issue').each(function() {
             var assignee = $(this).data('username');
@@ -65,7 +66,6 @@
     var onDrop = function onDrop(e) {
         var $issue = $('#' + e.dataTransfer.getData('text/plain'));
         var $newCol = $(e.target).closest('.issue-col');
-        $issue.remove().appendTo($newCol);
         firebaseRef.child('issues').child($issue.attr('id')).update({
             id: $issue.attr('id'),
             column: $newCol.data('column'),
