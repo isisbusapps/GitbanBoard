@@ -24,8 +24,10 @@
             <h3>Done</h3>
         </div>
     </div>
-    <div class="row">
-        <div id="backlog-col" class="col-sm-3 issue-col" ondragover="return false">
+    <div class="swimlanes"></div>
+    <div class="row swimlane" data-assignee="Unassigned">
+        <div class="swimlane-label">Unassigned</div>
+        <div data-column="backlog-col" class="col-sm-3 issue-col" ondragover="return false">
             {{#each backlog}}
                 <div class="issue hide" draggable="true" id="issue{{id}}"
                     data-username="{{#if assignee}}{{assignee.login}}{{else}}Unassigned{{/if}}" data-label="{{#each labels}}{{name}} {{/each}}" data-repo="{{reponame}}"
@@ -44,20 +46,20 @@
                         |
                         <span class="reponum">{{reponame}}#{{number}}</span>
                         {{#if (is state "closed")}}
-                        | <span class="label label-danger">&#10004; Closed</span> 
+                        | <span class="label label-danger">&#10004; Closed</span>
                         {{/if}}
                     </div>
                 </div>
             {{/each}}
         </div>
-        <div id="todo-col" class="col-sm-3 issue-col" ondragover="return false">
-            
+        <div data-column="todo-col" class="col-sm-3 issue-col" ondragover="return false">
+
         </div>
-        <div id="inprogress-col" class="col-sm-3 issue-col" ondragover="return false">
-            
+        <div data-column="inprogress-col" class="col-sm-3 issue-col" ondragover="return false">
+
         </div>
-        <div id="done-col" class="col-sm-3 issue-col" ondragover="return false">
-            
+        <div data-column="done-col" class="col-sm-3 issue-col" ondragover="return false">
+
         </div>
     </div>
 </div>

@@ -11,20 +11,52 @@
         });
 
         configFilterOptions();
+        moveToSwimlanes();
 
         firebaseRef.child('issues').on('child_changed', updateIssues);
         firebaseRef.child('issues').on('child_added', updateIssues);
         firebaseRef.child('standup').on('value', updateStandup);
     };
 
-    var resizeColumns = function resizeColumns() {
-        var colHeight =  -1;
-        $('.issue-col').each(function() {
-            $(this).height('initial');
-            var h = $(this).height();
-            colHeight = h > colHeight ? h : colHeight;
+    var moveToSwimlanes = function moveToSwimlanes() {
+        var assignees = [];
+        var backlogColumn = $('<div/>').addClass('col-sm-3 issue-col').attr('data-column', 'backlog-col').on('dragover', function(){return false;});
+        var todoColumn = $('<div/>').addClass('col-sm-3 issue-col').attr('data-column', 'todo-col').on('dragover', function(){return false;});
+        var inprogressColumn = $('<div/>').addClass('col-sm-3 issue-col').attr('data-column', 'inprogress-col').on('dragover', function(){return false;});
+        var doneColumn = $('<div/>').addClass('col-sm-3 issue-col').attr('data-column', 'done-col').on('dragover', function(){return false;});
+
+        $('.issue').each(function() {
+            var assignee = $(this).data('username');
+            if(assignee !== 'Unassigned' && assignees.indexOf(assignee) < 0) {
+                assignees.push(assignee);
+            }
         });
-        $('.issue-col').height(colHeight);
+        assignees = assignees.sort();
+        assignees.forEach(function(assignee){
+            var row = $('<div/>').addClass('row swimlane').attr('data-assignee', assignee);
+            row.append($('<div/>').addClass('swimlane-label').text(assignee));
+            row.append(backlogColumn.clone());
+            row.append(todoColumn.clone());
+            row.append(inprogressColumn.clone());
+            row.append(doneColumn.clone());
+            $('.swimlanes').append(row);
+        });
+        $('.issue').each(function(){
+            var column = $('.swimlane[data-assignee=' + $(this).data('username') + ']').find('[data-column=' + $(this).closest('.issue-col').data('column') + ']');
+            $(this).remove().appendTo(column);
+        });
+    };
+
+    var resizeColumns = function resizeColumns() {
+        $('.swimlane').each(function() {
+            var colHeight =  -1;
+            $(this).find('.issue-col').each(function() {
+                $(this).height('initial');
+                var h = $(this).height();
+                colHeight = h > colHeight ? h : colHeight;
+            });
+            $(this).find('.issue-col').height(colHeight);
+        });
     };
 
     var startDrag = function startDrag(e) {
@@ -36,17 +68,16 @@
         $issue.remove().appendTo($newCol);
         firebaseRef.child('issues').child($issue.attr('id')).update({
             id: $issue.attr('id'),
-            column: $newCol.attr('id')
+            column: $newCol.data('column'),
+            assignee: $issue.data('username')
         });
-	e.preventDefault();
+	   e.preventDefault();
     };
 
     var updateIssues = function updateIssues(snapshot) {
         var $issue = $('#' + snapshot.val().id);
-        var column = '#' + snapshot.val().column;
-        if ($issue.parents(column).length === 0) {
-            $issue.remove().appendTo(column);
-        }
+        var column = $('.swimlane[data-assignee=' + snapshot.val().assignee + ']').find('[data-column=' + snapshot.val().column + ']');
+        $issue.remove().appendTo(column);
         $('.progress').remove();
         resizeColumns();
     };
