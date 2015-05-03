@@ -3,6 +3,23 @@
 (function() {
 
     var init = function init() {
+        var imOnline = firebaseRef.child('users').child(userId).child('online');
+        imOnline.set(true);
+        imOnline.onDisconnect().set(false);
+
+        firebaseRef.child('users').on('value', function(snapshot) {
+            var users = snapshot.val();
+            Object.keys(users).forEach(function(user) {
+                if(users.hasOwnProperty(user)) {
+                    if(users[user].online){
+                        $('[data-standup-user-id=' + user + '] .online-status').removeClass('hide');
+                    } else {
+                        $('[data-standup-user-id=' + user + '] .online-status').addClass('hide');
+                    }
+                }
+            });
+        });
+
         moveToSwimlanes();
 
         $('.issue-col').each(function() {
@@ -185,8 +202,8 @@
                 username: username
             });
         };
-        $('[data-standup-user]').on('click', selectUser);
-        $('.js-endStandup').on('click', endStandup);
+        $('[data-standup-user]').unbind('click').on('click', selectUser);
+        $('.js-endStandup').unbind('click').on('click', endStandup);
     };
 
     var updateStandup = function updateStandup(snapshot) {

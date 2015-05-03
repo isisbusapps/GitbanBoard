@@ -164,9 +164,10 @@
                         <ul class="standupList">
                         {{#each standupUsers}}
                             <li>
-                                <a href="#" data-standup-user="{{login}}">
+                                <a href="#" data-standup-user="{{login}}" data-standup-user-id="{{id}}">
                                     <img src="{{avatar_url}}" /><br/>
-                                    {{name}}<br/>({{login}})
+                                    {{name}}<br/>({{login}})<br/>
+                                    <div class="label label-success hide online-status">Online</div>
                                 </a>
                             </li>
                         {{/each}}
