@@ -24,13 +24,21 @@
 
 .issue-col{
     border-bottom:2px solid @border-colour;
+    border-top:2px solid @border-colour;
     border-right:2px solid @border-colour;
-    min-height:500px;
+    min-height:10px;
     height: 100%;
-    
+
     &:last-of-type{
         border-right: 0;
     }
+}
+
+.swimlane-label {
+    font-weight:bold;
+    font-size: 1.5em;
+    margin: 0 5px;
+    color: @border-colour;
 }
 
 
@@ -50,7 +58,7 @@
     }
 }
 
-.progress{  
+.progress{
     position: absolute;
     top: 50%;
     width: 90%;

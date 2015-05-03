@@ -3,6 +3,8 @@
 (function() {
 
     var init = function init() {
+        moveToSwimlanes();
+
         $('.issue-col').each(function() {
             this.addEventListener('drop', onDrop);
         });
@@ -17,14 +19,45 @@
         firebaseRef.child('standup').on('value', updateStandup);
     };
 
-    var resizeColumns = function resizeColumns() {
-        var colHeight =  -1;
-        $('.issue-col').each(function() {
-            $(this).height('initial');
-            var h = $(this).height();
-            colHeight = h > colHeight ? h : colHeight;
+    var moveToSwimlanes = function moveToSwimlanes() {
+        var assignees = [];
+        var backlogColumn = $('<div/>').addClass('col-sm-3 issue-col').attr('data-column', 'backlog-col').on('dragover', function(){return false;}).attr('ondragover', 'return false;');
+        var todoColumn = $('<div/>').addClass('col-sm-3 issue-col').attr('data-column', 'todo-col').on('dragover', function(){return false;}).attr('ondragover', 'return false;');
+        var inprogressColumn = $('<div/>').addClass('col-sm-3 issue-col').attr('data-column', 'inprogress-col').on('dragover', function(){return false;}).attr('ondragover', 'return false;');
+        var doneColumn = $('<div/>').addClass('col-sm-3 issue-col').attr('data-column', 'done-col').on('dragover', function(){return false;}).attr('ondragover', 'return false;');
+
+        $('.issue').each(function() {
+            var assignee = $(this).data('username');
+            if(assignee !== 'Unassigned' && assignees.indexOf(assignee) < 0) {
+                assignees.push(assignee);
+            }
         });
-        $('.issue-col').height(colHeight);
+        assignees = assignees.sort();
+        assignees.forEach(function(assignee){
+            var row = $('<div/>').addClass('row swimlane').attr('data-assignee', assignee);
+            row.append($('<div/>').addClass('swimlane-label').text(assignee));
+            row.append(backlogColumn.clone());
+            row.append(todoColumn.clone());
+            row.append(inprogressColumn.clone());
+            row.append(doneColumn.clone());
+            $('.swimlanes').append(row);
+        });
+        $('.issue').each(function(){
+            var column = $('.swimlane[data-assignee=' + $(this).data('username') + ']').find('[data-column=' + $(this).closest('.issue-col').data('column') + ']');
+            $(this).remove().appendTo(column);
+        });
+    };
+
+    var resizeColumns = function resizeColumns() {
+        $('.swimlane').each(function() {
+            var colHeight =  -1;
+            $(this).find('.issue-col').each(function() {
+                $(this).height('initial');
+                var h = $(this).height();
+                colHeight = h > colHeight ? h : colHeight;
+            });
+            $(this).find('.issue-col').height(colHeight);
+        });
     };
 
     var startDrag = function startDrag(e) {
@@ -33,20 +66,18 @@
     var onDrop = function onDrop(e) {
         var $issue = $('#' + e.dataTransfer.getData('text/plain'));
         var $newCol = $(e.target).closest('.issue-col');
-        $issue.remove().appendTo($newCol);
         firebaseRef.child('issues').child($issue.attr('id')).update({
             id: $issue.attr('id'),
-            column: $newCol.attr('id')
+            column: $newCol.data('column'),
+            assignee: $issue.data('username')
         });
-	e.preventDefault();
+	   e.preventDefault();
     };
 
     var updateIssues = function updateIssues(snapshot) {
         var $issue = $('#' + snapshot.val().id);
-        var column = '#' + snapshot.val().column;
-        if ($issue.parents(column).length === 0) {
-            $issue.remove().appendTo(column);
-        }
+        var column = $('.swimlane[data-assignee=' + snapshot.val().assignee + ']').find('[data-column=' + snapshot.val().column + ']');
+        $issue.remove().appendTo(column);
         $('.progress').remove();
         resizeColumns();
     };
@@ -56,8 +87,10 @@
             return $(self).parent().text().trim();
         }
         $('.issue').removeClass('hide');
+        $('.swimlane').removeClass('hide');
         $('.js-githubuser').not(':checked').each(function() {
             $('.issue[data-username="' + getParentText(this) + '"]').addClass('hide');
+            $('.swimlane[data-assignee="' + getParentText(this) + '"]').addClass('hide');
         });
         $('.js-label').not(':checked').each(function() {
             $('.issue[data-label*="' + getParentText(this) + '"]').addClass('hide');
@@ -158,16 +191,10 @@
     var updateStandup = function updateStandup(snapshot) {
         if (snapshot.val()) {
             var username = snapshot.val().username;
-            $('#standupBtn').text('Select Next Person');
-            $('.js-githubuser').each(function() {
-                this.checked = false;
-            });
-            if ($('#githubuser-' + username).length) {
-                $('#githubuser-' + username)[0].checked = true;
-            }
-
-            filterIssues();
+            $('.swimlane').addClass('hide');
+            $('.swimlane[data-assignee=' + username + ']').removeClass('hide');
         } else {
+            $('.swimlane').removeClass('hide');
             $('#standupBtn').text('Start Stand-up');
             configFilterOptions();
         }
