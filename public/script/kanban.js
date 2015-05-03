@@ -189,16 +189,10 @@
     var updateStandup = function updateStandup(snapshot) {
         if (snapshot.val()) {
             var username = snapshot.val().username;
-            $('#standupBtn').text('Select Next Person');
-            $('.js-githubuser').each(function() {
-                this.checked = false;
-            });
-            if ($('#githubuser-' + username).length) {
-                $('#githubuser-' + username)[0].checked = true;
-            }
-
-            filterIssues();
+            $('.swimlane').addClass('hide');
+            $('.swimlane[data-assignee=' + username + ']').removeClass('hide');
         } else {
+            $('.swimlane').removeClass('hide');
             $('#standupBtn').text('Start Stand-up');
             configFilterOptions();
         }
