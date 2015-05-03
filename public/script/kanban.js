@@ -87,8 +87,10 @@
             return $(self).parent().text().trim();
         }
         $('.issue').removeClass('hide');
+        $('.swimlane').removeClass('hide');
         $('.js-githubuser').not(':checked').each(function() {
             $('.issue[data-username="' + getParentText(this) + '"]').addClass('hide');
+            $('.swimlane[data-assignee="' + getParentText(this) + '"]').addClass('hide');
         });
         $('.js-label').not(':checked').each(function() {
             $('.issue[data-label*="' + getParentText(this) + '"]').addClass('hide');
