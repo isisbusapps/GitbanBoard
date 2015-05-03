@@ -27,7 +27,7 @@
     <div class="swimlanes"></div>
     <div class="row swimlane" data-assignee="Unassigned">
         <div class="swimlane-label">Unassigned</div>
-        <div data-column="backlog-col" class="col-sm-3 issue-col" ondragover="return false">
+        <div data-column="backlog-col" class="col-sm-3 issue-col">
             {{#each backlog}}
                 <div class="issue hide" draggable="true" id="issue{{id}}"
                     data-username="{{#if assignee}}{{assignee.login}}{{else}}Unassigned{{/if}}" data-label="{{#each labels}}{{name}} {{/each}}" data-repo="{{reponame}}"
@@ -52,13 +52,13 @@
                 </div>
             {{/each}}
         </div>
-        <div data-column="todo-col" class="col-sm-3 issue-col" ondragover="return false">
+        <div data-column="todo-col" class="col-sm-3 issue-col">
 
         </div>
-        <div data-column="inprogress-col" class="col-sm-3 issue-col" ondragover="return false">
+        <div data-column="inprogress-col" class="col-sm-3 issue-col">
 
         </div>
-        <div data-column="done-col" class="col-sm-3 issue-col" ondragover="return false">
+        <div data-column="done-col" class="col-sm-3 issue-col">
 
         </div>
     </div>

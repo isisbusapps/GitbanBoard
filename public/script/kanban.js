@@ -24,6 +24,7 @@
 
         $('.issue-col').each(function() {
             this.addEventListener('drop', onDrop);
+            this.addEventListener('dragover', function(){return false;});
         });
         $('.issue').each(function() {
             this.addEventListener('dragstart', startDrag);
@@ -38,11 +39,6 @@
 
     var moveToSwimlanes = function moveToSwimlanes() {
         var assignees = [];
-        var backlogColumn = $('<div/>').addClass('col-sm-3 issue-col').attr('data-column', 'backlog-col').on('dragover', function(){return false;}).attr('ondragover', 'return false;');
-        var todoColumn = $('<div/>').addClass('col-sm-3 issue-col').attr('data-column', 'todo-col').on('dragover', function(){return false;}).attr('ondragover', 'return false;');
-        var inprogressColumn = $('<div/>').addClass('col-sm-3 issue-col').attr('data-column', 'inprogress-col').on('dragover', function(){return false;}).attr('ondragover', 'return false;');
-        var doneColumn = $('<div/>').addClass('col-sm-3 issue-col').attr('data-column', 'done-col').on('dragover', function(){return false;}).attr('ondragover', 'return false;');
-
         $('.issue').each(function() {
             var assignee = $(this).data('username');
             if(assignee !== 'Unassigned' && assignees.indexOf(assignee) < 0) {
@@ -51,13 +47,8 @@
         });
         assignees = assignees.sort();
         assignees.forEach(function(assignee){
-            var row = $('<div/>').addClass('row swimlane').attr('data-assignee', assignee);
-            row.append($('<div/>').addClass('swimlane-label').text(assignee));
-            row.append(backlogColumn.clone());
-            row.append(todoColumn.clone());
-            row.append(inprogressColumn.clone());
-            row.append(doneColumn.clone());
-            $('.swimlanes').append(row);
+            var html = Handlebars.templates.swimlane({assignee:assignee});
+            $('.swimlanes').append(html);
         });
         $('.issue').each(function(){
             var column = $('.swimlane[data-assignee=' + $(this).data('username') + ']').find('[data-column=' + $(this).closest('.issue-col').data('column') + ']');
