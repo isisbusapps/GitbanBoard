@@ -171,7 +171,7 @@
         };
 
         $('#saveFilterButton').on('click', saveFilter);
-        $('[data-action="toggleAll"]').on('click', toggleAll);
+        $('[data-action="toggleAll"]').unbind('click').on('click', toggleAll);
         loadFilter();
     };
 
