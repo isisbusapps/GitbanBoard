@@ -63,6 +63,7 @@
     var startDrag = function startDrag(e) {
         e.dataTransfer.setData('text/plain', this.id);
     };
+
     var onDrop = function onDrop(e) {
         var $issue = $('#' + e.dataTransfer.getData('text/plain'));
         var $newCol = $(e.target).closest('.issue-col');
@@ -128,13 +129,13 @@
                     formValues[inputId] = formInputs[i].value;
                 }
             }
-            firebaseRef.child('filter').child(userId).update(formValues);
+            firebaseRef.child('users').child(userId).child('filter').update(formValues);
 
             filterIssues();
         };
         var loadFilter = function saveFilter() {
-            var filters = firebaseRef.child('filter');
-            filters.child(userId).once('value', function(snapshot) {
+            var filters = firebaseRef.child('users').child(userId);
+            filters.child('filter').once('value', function(snapshot) {
                 var formValues = snapshot.val();
                 var inputElement;
                 if (formValues) {
