@@ -46,11 +46,11 @@
             }
         });
         assignees = assignees.sort();
-        assignees.forEach(function(assignee){
-            var html = Handlebars.templates.swimlane({assignee:assignee});
+        assignees.forEach(function(assignee) {
+            var html = Handlebars.templates.swimlane({assignee:assignee, avatar:$('[data-username=' + assignee + '] .avatar').attr('src')});
             $('.swimlanes').append(html);
         });
-        $('.issue').each(function(){
+        $('.issue').each(function() {
             var column = $('.swimlane[data-assignee=' + $(this).data('username') + ']').find('[data-column=' + $(this).closest('.issue-col').data('column') + ']');
             $(this).remove().appendTo(column);
         });
