@@ -4,10 +4,11 @@
             <a href="#" class="btn btn-success btn-lg" id="standupBtn" data-toggle="modal" data-target="#standupModal">Start Stand-up</a>
         </div>
         <div class="col-xs-4">
-            <a href="#" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#filterModal">
-                Filter
-            </a>
+            <a href="#" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#filterModal">Filter</a>
             <br/>
+        </div>
+        <div class="col-xs-4 text-right">
+            <a href="#" class="btn btn-success btn-lg" data-toggle="modal" data-target="#adHocModal">Ad-Hoc Issue</a>
         </div>
     </div>
     <div class="row text-center">
@@ -158,6 +159,37 @@
                         <a href="#" class="btn btn-danger pull-right js-endStandup">End Standup</a>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="adHocModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">New Ad-Hoc Issue</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <h3>Title</h3>
+                    </div>
+                    <div class="row">
+                        <input type="text" class="col-md-12" id="adhoc-title" />
+                    </div>
+                    <div class="row">
+                        <h3>Description</h3>
+                    </div>
+                    <div class="row">
+                        <textarea class="col-md-12" rows="8" id="adhoc-description"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="addNewAdHocIssue">Add new ad-hoc issue</button>
             </div>
         </div>
     </div>

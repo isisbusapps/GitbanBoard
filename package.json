@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "lessc ./public/style/style.less > ./public/style/style.css && handlebars views/partials/swimlane.handlebars -f public/script/swimlanes.template.js"
+    "postinstall": "lessc ./public/style/style.less > ./public/style/style.css && handlebars views/partials/swimlane.handlebars -f public/script/swimlanes.template.js && handlebars views/partials/issuetile.handlebars -f public/script/issuetile.template.js"
   },
   "repository": {
     "type": "git",

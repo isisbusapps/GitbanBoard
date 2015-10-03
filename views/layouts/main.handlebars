@@ -19,9 +19,11 @@
     <script src="/script/drag-drop-polyfill.js" async defer></script>
     <script src="//cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
     <script src="/script/swimlanes.template.js"></script>
+    <script src="/script/issuetile.template.js"></script>
     <script>
         var firebaseRef = new Firebase("{{firebaseurl}}");
         var userId = {{#if user.profile.id }}{{user.profile.id}}{{else}}undefined{{/if}};
+        var username = '{{user.profile.username}}';
         var githubToken = (function() {
             $.get("/accessToken", function(data) {
                 githubToken = data;
@@ -43,6 +45,13 @@
             }
         };
         setTimeout(checkFirebaseReady,0);
+
+        Handlebars.registerHelper('formatDate', function(date) {
+            return moment(date).format('ddd DD-MM-YY');
+        });
+        Handlebars.registerHelper('is', function(a, b) {
+            return a === b;
+        });
     </script>
     <script src="/script/kanban.js"></script>
 </body>

@@ -11,13 +11,17 @@
         {{/each}}
     </div>
     <div class="baseline">
-        <span class="updated">{{formatDate updated_at}}</span>
-        |
-        <span class="reponum">
-            <a href="{{html_url}}" target="_blank">{{reponame}}#{{number}}</a>
-        </span>
+        {{#if updated_at}}
+            <span class="updated">{{formatDate updated_at}}</span>
+        {{/if}}
+        {{#if number}}
+            |
+            <span class="reponum">
+                <a href="{{html_url}}" target="_blank">{{reponame}}#{{number}}</a>
+            </span>
+        {{/if}}
         {{#if (is state "closed")}}
-        | <span class="label label-danger">&#10004; Closed</span>
+            | <span class="label label-danger">&#10004; Closed</span>
         {{/if}}
     </div>
 </div>

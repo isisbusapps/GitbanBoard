@@ -32,9 +32,12 @@
 
         firebaseRef.child('issues').on('child_changed', updateIssues);
         firebaseRef.child('issues').on('child_added', updateIssues);
+        firebaseRef.child('adHocIssues').on('child_changed', updateAdHocIssues);
+        firebaseRef.child('adHocIssues').on('child_added', updateAdHocIssues);
         firebaseRef.child('standup').on('value', updateStandup);
 
         configFilterOptions();
+        configureAdHocIssues();
     };
 
     var moveToSwimlanes = function moveToSwimlanes() {
@@ -75,25 +78,37 @@
     var onDrop = function onDrop(e) {
         var $issue = $('#' + e.dataTransfer.getData('text/plain'));
         var $newCol = $(e.target).closest('.issue-col');
+        var $column = $('.swimlane[data-assignee=' + $issue.data('username') + ']').find('[data-column=' + $newCol.data('column') + ']')
 
-        if ($(e.target).is('.issue') || $(e.target).parents('.issue').length) {
-            var $neighbour = $(e.target).closest('.issue');
+        var $neighbour = $(e.target).closest('.issue');
+        if (($(e.target).is('.issue') || $(e.target).parents('.issue').length) && $column.has($(e.target)).length && !$neighbour.is($issue)) {
             var midPoint = $neighbour.offset().top + ($neighbour.outerHeight() / 2);
             if (e.y > midPoint) {
                 $issue.remove().insertAfter($neighbour);
             } else {
                 $issue.remove().insertBefore($neighbour);
             }
+        } else {
+            $issue.remove().appendTo($column);
         }
 
-        $newCol.find('.issue').each(function(index, el){
+        $column.find('.issue').each(function(index, el){
             var $el = $(el);
-            firebaseRef.child('issues').child($el.attr('id')).update({
-                id: $el.attr('id'),
-                column: $newCol.data('column'),
-                assignee: $el.data('username'),
-                position: index
-            });
+            if($el.is('.adhoc')){
+                firebaseRef.child('adHocIssues').child($el.attr('id').replace(/issue/,'')).update({
+                    id: $el.attr('id'),
+                    column: $newCol.data('column'),
+                    assignee: $el.data('username'),
+                    position: index
+                });
+            } else {
+                firebaseRef.child('issues').child($el.attr('id')).update({
+                    id: $el.attr('id'),
+                    column: $newCol.data('column'),
+                    assignee: $el.data('username'),
+                    position: index
+                });
+            }
         });
 
         e.preventDefault();
@@ -105,9 +120,35 @@
         $issue.attr('data-position', snapshot.val().position);
         $issue.remove().appendTo(column);
         $('.progress').remove();
+
         resizeColumns();
         sortColumn(column);
     };
+
+    var updateAdHocIssues = function updateAdHocIssues(snapshot) {
+        var $issue = $('#' + snapshot.val().id);
+        if(!$issue.length){
+            $issue = $(Handlebars.templates.issuetile({
+                title: snapshot.val().title,
+                body: snapshot.val().description,
+                assignee: {
+                    login: snapshot.val().assignee
+                },
+                id: snapshot.key(),
+                updated_at: new Date(snapshot.val().updated_at)
+            }));
+            $issue.removeClass('hide');
+        }
+        var column = $('.swimlane[data-assignee=' + snapshot.val().assignee + ']').find('[data-column=' + snapshot.val().column + ']');
+        $issue.addClass('adhoc');
+        $issue.get(0).removeEventListener('dragstart', startDrag);
+        $issue.get(0).addEventListener('dragstart', startDrag);
+        column.append($issue);
+        $('.progress').remove();
+
+        resizeColumns();
+        sortColumn(column);
+    }
 
     var sortColumn = function sortColumn($column){
         var $issues = $column.find('.issue');
@@ -218,6 +259,30 @@
         $('#saveFilterButton').on('click', saveFilter);
         $('[data-action="toggleAll"]').unbind('click').on('click', toggleAll);
         loadFilter();
+    };
+
+    var configureAdHocIssues = function configureAdHocIssues() {
+        var validateInput = function validateInput(){
+            var emptyCount = $('#adHocModal input,#adHocModal textarea').filter(function(){
+                return $(this).val().trim().length === 0;
+            }).length;
+
+            return !emptyCount;
+        };
+
+        $('#addNewAdHocIssue').on('click', function(){
+            if(validateInput()){
+                firebaseRef.child('adHocIssues').push({
+                    assignee: username,
+                    title: $('#adhoc-title').val(),
+                    description: $('#adhoc-description').val(),
+                    column: 'backlog-col',
+                    updated_at: new Date().getTime()
+                });
+                $('#adHocModal input,#adHocModal textarea').val('');
+                $('#adHocModal').modal('hide');
+            }
+        });
     };
 
     var standupMode = function standupMode() {
