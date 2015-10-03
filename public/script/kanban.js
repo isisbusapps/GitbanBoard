@@ -2,8 +2,6 @@
 /* global firebaseRef, moment, userId */
 (function() {
 
-    var skipUpdate = false;
-
     var init = function init() {
         var imOnline = firebaseRef.child('users').child(userId).child('online');
         imOnline.set(true);
@@ -32,11 +30,11 @@
             this.addEventListener('dragstart', startDrag);
         });
 
-        configFilterOptions();
-
         firebaseRef.child('issues').on('child_changed', updateIssues);
         firebaseRef.child('issues').on('child_added', updateIssues);
         firebaseRef.child('standup').on('value', updateStandup);
+
+        configFilterOptions();
     };
 
     var moveToSwimlanes = function moveToSwimlanes() {
@@ -88,24 +86,43 @@
             }
         }
 
-        firebaseRef.child('issues').child($issue.attr('id')).update({
-            id: $issue.attr('id'),
-            column: $newCol.data('column'),
-            assignee: $issue.data('username')
+        $newCol.find('.issue').each(function(index, el){
+            var $el = $(el);
+            firebaseRef.child('issues').child($el.attr('id')).update({
+                id: $el.attr('id'),
+                column: $newCol.data('column'),
+                assignee: $el.data('username'),
+                position: index
+            });
         });
-        skipUpdate = true;
+
         e.preventDefault();
     };
 
     var updateIssues = function updateIssues(snapshot) {
-        if(!skipUpdate){
-            var $issue = $('#' + snapshot.val().id);
-            var column = $('.swimlane[data-assignee=' + snapshot.val().assignee + ']').find('[data-column=' + snapshot.val().column + ']');
-            $issue.remove().appendTo(column);
-            $('.progress').remove();
-            resizeColumns();
-        }
-        skipUpdate = false;
+        var $issue = $('#' + snapshot.val().id);
+        var column = $('.swimlane[data-assignee=' + snapshot.val().assignee + ']').find('[data-column=' + snapshot.val().column + ']');
+        $issue.attr('data-position', snapshot.val().position);
+        $issue.remove().appendTo(column);
+        $('.progress').remove();
+        resizeColumns();
+        sortColumn(column);
+    };
+
+    var sortColumn = function sortColumn($column){
+        var $issues = $column.find('.issue');
+        $issues = $issues.sort(function(a, b){
+            var aPosition = $(a).data('position');
+            var bPosition = $(b).data('position');
+            if (aPosition < bPosition) {
+                return -1;
+            } else if (aPosition > bPosition) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+        $issues.remove().appendTo($column);
     };
 
     var filterIssues = function filterIssues() {
@@ -137,6 +154,9 @@
 
         $('#filterModal').modal('hide');
         resizeColumns();
+        $('[data-column]').each(function(){
+            sortColumn($(this));
+        });
     };
 
     var configFilterOptions = function configFilterOptions() {
@@ -158,7 +178,7 @@
 
             filterIssues();
         };
-        var loadFilter = function saveFilter() {
+        var loadFilter = function loadFilter() {
             var filters = firebaseRef.child('users').child(userId);
             filters.child('filter').once('value', function(snapshot) {
                 var formValues = snapshot.val();
