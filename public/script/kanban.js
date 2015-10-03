@@ -2,6 +2,8 @@
 /* global firebaseRef, moment, userId */
 (function() {
 
+    var skipUpdate = false;
+
     var init = function init() {
         var imOnline = firebaseRef.child('users').child(userId).child('online');
         imOnline.set(true);
@@ -75,20 +77,35 @@
     var onDrop = function onDrop(e) {
         var $issue = $('#' + e.dataTransfer.getData('text/plain'));
         var $newCol = $(e.target).closest('.issue-col');
+
+        if ($(e.target).is('.issue') || $(e.target).parents('.issue').length) {
+            var $neighbour = $(e.target).closest('.issue');
+            var midPoint = $neighbour.offset().top + ($neighbour.outerHeight() / 2);
+            if (e.y > midPoint) {
+                $issue.remove().insertAfter($neighbour);
+            } else {
+                $issue.remove().insertBefore($neighbour);
+            }
+        }
+
         firebaseRef.child('issues').child($issue.attr('id')).update({
             id: $issue.attr('id'),
             column: $newCol.data('column'),
             assignee: $issue.data('username')
         });
-	   e.preventDefault();
+        skipUpdate = true;
+        e.preventDefault();
     };
 
     var updateIssues = function updateIssues(snapshot) {
-        var $issue = $('#' + snapshot.val().id);
-        var column = $('.swimlane[data-assignee=' + snapshot.val().assignee + ']').find('[data-column=' + snapshot.val().column + ']');
-        $issue.remove().appendTo(column);
-        $('.progress').remove();
-        resizeColumns();
+        if(!skipUpdate){
+            var $issue = $('#' + snapshot.val().id);
+            var column = $('.swimlane[data-assignee=' + snapshot.val().assignee + ']').find('[data-column=' + snapshot.val().column + ']');
+            $issue.remove().appendTo(column);
+            $('.progress').remove();
+            resizeColumns();
+        }
+        skipUpdate = false;
     };
 
     var filterIssues = function filterIssues() {
