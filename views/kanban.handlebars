@@ -29,27 +29,7 @@
         <div class="swimlane-label">Unassigned</div>
         <div data-column="backlog-col" class="col-sm-3 issue-col" ondragover="return false;">
             {{#each backlog}}
-                <div class="issue hide" draggable="true" id="issue{{id}}"
-                    data-username="{{#if assignee}}{{assignee.login}}{{else}}Unassigned{{/if}}" data-label="{{#each labels}}{{name}} {{/each}}" data-repo="{{reponame}}"
-                    data-state="{{state}}" data-updated="{{updated_at}}"
-                    >
-                    <span class="title">{{title}}</span>
-                    <img src="{{assignee.avatar_url}}" class="avatar" />
-                    <div class="description">{{body}}</div>
-                    <div class="labels">
-                        {{#each labels}}
-                            <span style="background-color:#{{color}}">{{name}}</span>
-                        {{/each}}
-                    </div>
-                    <div class="baseline">
-                        <span class="updated">{{formatDate updated_at}}</span>
-                        |
-                        <span class="reponum">{{reponame}}#{{number}}</span>
-                        {{#if (is state "closed")}}
-                        | <span class="label label-danger">&#10004; Closed</span>
-                        {{/if}}
-                    </div>
-                </div>
+                {{> issuecard this }}
             {{/each}}
         </div>
         <div data-column="todo-col" class="col-sm-3 issue-col" ondragover="return false;">

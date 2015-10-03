@@ -1,0 +1,23 @@
+<div class="issue hide" draggable="true" id="issue{{id}}"
+    data-username="{{#if assignee}}{{assignee.login}}{{else}}Unassigned{{/if}}" data-label="{{#each labels}}{{name}} {{/each}}" data-repo="{{reponame}}"
+    data-state="{{state}}" data-updated="{{updated_at}}"
+    >
+    <span class="title">{{title}}</span>
+    <img src="{{assignee.avatar_url}}" class="avatar" />
+    <div class="description">{{body}}</div>
+    <div class="labels">
+        {{#each labels}}
+            <span style="background-color:#{{color}}">{{name}}</span>
+        {{/each}}
+    </div>
+    <div class="baseline">
+        <span class="updated">{{formatDate updated_at}}</span>
+        |
+        <span class="reponum">
+            <a href="{{html_url}}" target="_blank">{{reponame}}#{{number}}</a>
+        </span>
+        {{#if (is state "closed")}}
+        | <span class="label label-danger">&#10004; Closed</span>
+        {{/if}}
+    </div>
+</div>
