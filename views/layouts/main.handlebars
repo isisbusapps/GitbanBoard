@@ -20,6 +20,7 @@
     <script src="//cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
     <script src="/script/swimlanes.template.js"></script>
     <script src="/script/issuetile.template.js"></script>
+    <script src="/script/kanban.js"></script>
     <script>
         var firebaseRef = new Firebase("{{firebaseurl}}");
         var userId = {{#if user.profile.id }}{{user.profile.id}}{{else}}undefined{{/if}};
@@ -53,6 +54,5 @@
             return a === b;
         });
     </script>
-    <script src="/script/kanban.js"></script>
 </body>
 </html>

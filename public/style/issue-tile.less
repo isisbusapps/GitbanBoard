@@ -21,12 +21,23 @@
         &[src=''] {
             display: none;
         }
+
+        .enlarged& {
+            height: 70px;
+            width: 70px;
+        }
     }
 
     .description{
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+
+        .enlarged& {
+            overflow-y: scroll;
+            white-space: pre-line;
+            text-overflow: initial;
+        }
     }
 
     .labels span {

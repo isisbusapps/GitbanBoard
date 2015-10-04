@@ -22,22 +22,33 @@
 
         moveToSwimlanes();
 
-        $('.issue-col').each(function() {
-            this.addEventListener('drop', onDrop);
-            this.addEventListener('dragover', function(){return false;});
-        });
-        $('.issue').each(function() {
-            this.addEventListener('dragstart', startDrag);
-        });
-
         firebaseRef.child('issues').on('child_changed', updateIssues);
         firebaseRef.child('issues').on('child_added', updateIssues);
         firebaseRef.child('adHocIssues').on('child_changed', updateAdHocIssues);
         firebaseRef.child('adHocIssues').on('child_added', updateAdHocIssues);
         firebaseRef.child('standup').on('value', updateStandup);
+        firebaseRef.child('enlarged').on('value', showEnlargedIssue);
 
         configFilterOptions();
         configureAdHocIssues();
+        attachListeners();
+    };
+
+    var attachListeners = function attachListeners(){
+        $('.issue-col').each(function() {
+            this.removeEventListener('drop');
+            this.addEventListener('drop', onDrop);
+            this.removeEventListener('dragover');
+            this.addEventListener('dragover', function(){return false;});
+        });
+        $('.issue').each(function() {
+            this.removeEventListener('dragstart');
+            this.addEventListener('dragstart', startDrag);
+        });
+        $('.issue').each(function() {
+            this.removeEventListener('dblclick');
+            this.addEventListener('dblclick', enlargeIssue);
+        });
     };
 
     var moveToSwimlanes = function moveToSwimlanes() {
@@ -148,6 +159,7 @@
 
         resizeColumns();
         sortColumn(column);
+        attachListeners();
     }
 
     var sortColumn = function sortColumn($column){
@@ -311,6 +323,54 @@
         }
 
         $('#standupModal').modal('hide');
+    };
+
+    var enlargeIssue = function enlargeIssue(){
+        firebaseRef.child('enlarged').update({
+            id: $(this).attr('id')
+        });
+    };
+
+    var showEnlargedIssue = function showEnlargedIssue(snapshot){
+        $('.enlarged').remove();
+        if(snapshot.val() && snapshot.val().id){
+            var $issue = $('#' + snapshot.val().id);
+            var $clone = $issue.clone(true, true);
+            $clone.attr('id', $clone.attr('id') + '_clone')
+                .css({
+                    position:'fixed',
+                    top:'50px',
+                    left:'50px',
+                    width: (function(){
+                        return $(window).width() - 100 + 'px';
+                    }()),
+                    height: (function(){
+                        return $(window).height() - 100 + 'px';
+                    }()),
+                    background: '#fff',
+                    fontSize: '3em'
+                })
+                .addClass('enlarged');
+            $clone.find('.description').css({
+                height: (function(){
+                    return $(window).height() - 100 - 70 - 65 - 65 + 'px';
+                }())
+            }).bind( 'mousewheel DOMMouseScroll', function(e) {
+                var delta = e.originalEvent.wheelDelta || -e.originalEvent.detail;
+                this.scrollTop += (delta < 0 ? 1 : -1) * 30;
+                e.preventDefault();
+            });
+            $clone.appendTo('body');
+
+            $('body').on('click', function(e){
+                if(!$clone.has($(e.target)).length){
+                    firebaseRef.child('enlarged').update({
+                        id: null
+                    });
+                    $('body').off('click');
+                }
+            });
+        }
     };
 
     if (document.location.pathname.indexOf('kanban') >= 0) {
